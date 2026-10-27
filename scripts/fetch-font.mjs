@@ -1,0 +1,12 @@
+import { writeFile } from 'node:fs/promises';
+const chars = [...new Set('北京大学第五人格赛事关于关注我们PIL庄园指北欢迎你的加入！燕园·')].join('');
+const url = `https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600&text=${encodeURIComponent(chars)}`;
+const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 Chrome/130.0.0.0 Safari/537.36' } });
+if (!res.ok) throw new Error(`Font CSS: ${res.status}`);
+const css = await res.text();
+const match = css.match(/url\((https:[^)]+)\)/);
+if (!match) throw new Error('Missing font URL');
+const font = await fetch(match[1]);
+if (!font.ok) throw new Error(`Font: ${font.status}`);
+await writeFile('public/assets/title-serif.woff2', Buffer.from(await font.arrayBuffer()));
+console.log('Saved local Noto Serif SC heading subset.');

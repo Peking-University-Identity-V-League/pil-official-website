@@ -1,0 +1,20 @@
+{
+  "name": "pkuidv-home",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "北京大学第五人格赛事官网",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node --test scripts/*.test.mjs",
+    "preview": "node scripts/serve.mjs --dist",
+    "assets": "node scripts/prepare-assets.mjs",
+    "verify": "node scripts/verify.mjs"
+  },
+  "devDependencies": {
+    "jsqr": "1.4.0",
+    "qrcode": "1.5.4",
+    "sharp": "0.34.5"
+  }
+}

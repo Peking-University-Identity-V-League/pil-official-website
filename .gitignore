@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.preview/
+.deploy/
+.apps/
+infra/
+artifacts/
+.env*
+*.pem
+*.key
+*Zone.Identifier
+assets/source/*.zip
+*.log
