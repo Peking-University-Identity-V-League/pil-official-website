@@ -1,46 +1,89 @@
-import { execFileSync, spawnSync } from 'node:child_process';
-import { appendFile } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
+import { appendFile, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { get, request as httpsRequest } from 'node:https';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-async function deploy() {
-  const account = process.env.CLOUDFLARE_ACCOUNT_ID;
-  const token = process.env.CLOUDFLARE_API_TOKEN;
-  if (!/^[a-f0-9]{32}$/.test(account || '') || !token) throw new Error('Cloudflare deployment credentials are missing.');
-  const commit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
-  async function project() {
-    try {
-      const response = await fetch('https://api.cloudflare.com/client/v4/accounts/' + account + '/pages/projects/pkuidv', {
-        headers: { Authorization: 'Bearer ' + token }, signal: AbortSignal.timeout(20000),
-      });
-      if (!response.ok) throw new Error();
-      const data = await response.json();
-      if (!data.success || data.result?.name !== 'pkuidv') throw new Error();
-      return data.result;
-    } catch { throw new Error('Authenticated Pages verification failed.'); }
+const sha = value => typeof value === 'string' && /^[a-f0-9]{40}$/.test(value);
+export function describeRelease(metadata) {
+  if (sha(metadata.homepage_commit) && !metadata.source_commit) {
+    return { component: 'home', release: 'home-' + metadata.homepage_commit, paths: ['/__release.json'] };
   }
-  // Refuse to create a different project when an expected project is unavailable.
-  await project();
-  const cli = fileURLToPath(new URL('../node_modules/wrangler/bin/wrangler.js', import.meta.url));
-  const result = spawnSync(process.execPath, [cli, 'pages', 'deploy', 'dist', '--project-name', 'pkuidv', '--branch', 'main', '--commit-hash', commit, '--commit-message', 'Publish PIL homepage', '--commit-dirty=false'], {
-    encoding: 'utf8', timeout: 180000, maxBuffer: 2 * 1024 * 1024,
-    env: { ...process.env, WRANGLER_SEND_METRICS: 'false' },
-  });
-  if (result.error || result.status !== 0) {
-    const raw = (result.stdout || '') + '\n' + (result.stderr || '');
-    const codes = [...new Set([...raw.matchAll(/\bcode:\s*(\d{3,6})\b/g)].map(match => match[1]))];
-    throw new Error('Pages upload failed. Exit code: ' + (result.status ?? 'unavailable') + (codes.length ? '; API codes: ' + codes.join(', ') : '') + '. Raw account diagnostics are suppressed.');
+  if (sha(metadata.source_commit) && sha(metadata.config_revision) && !metadata.homepage_commit) {
+    return { component: 'tactical', release: 'tactical-' + metadata.source_commit + '-' + metadata.config_revision, paths: ['/tactical-friend/__release.json', '/zhanshuyanlian/__release.json'] };
   }
-  for (let attempt = 0; attempt < 10; attempt++) {
-    const deployment = (await project()).canonical_deployment;
-    if (deployment?.environment === 'production' && deployment.latest_stage?.status === 'success' && deployment.deployment_trigger?.metadata?.commit_hash === commit) {
-      const message = 'Cloudflare Pages production deployment verified through the authenticated API. Commit: ' + commit + '; deployment: ' + deployment.id;
-      console.log(message);
-      if (process.env.GITHUB_STEP_SUMMARY) await appendFile(process.env.GITHUB_STEP_SUMMARY, message + '\n');
-      return;
-    }
-    await new Promise(resolve => setTimeout(resolve, 2000));
-  }
-  throw new Error('Upload completed, but the expected Pages production commit could not be verified.');
+  throw new Error('Static release metadata is invalid.');
 }
 
-try { await deploy(); } catch (error) { console.error(error.message); process.exitCode = 1; }
+function remoteMetadata(host, path) {
+  return new Promise((resolve, reject) => {
+    const request = get({ hostname: host, servername: 'pkuidv.com', path, headers: { Host: 'pkuidv.com' }, signal: AbortSignal.timeout(15000) }, response => {
+      if (response.statusCode !== 200) { response.resume(); reject(new Error('Unexpected release response.')); return; }
+      let size = 0;
+      const chunks = [];
+      response.on('data', chunk => {
+        size += chunk.length;
+        if (size > 65536) request.destroy(new Error('Release response is too large.'));
+        else chunks.push(chunk);
+      });
+      response.on('end', () => {
+        try { resolve(JSON.parse(Buffer.concat(chunks).toString('utf8'))); }
+        catch { reject(new Error('Invalid release response.')); }
+      });
+      response.on('error', reject);
+    });
+    request.on('error', reject);
+  });
+}
+
+export async function deploy() {
+  const metadata = JSON.parse(await readFile('dist/__release.json', 'utf8'));
+  const expected = describeRelease(metadata);
+  const { CST_HOST: host, CST_DEPLOY_TOKEN: token, ...environment } = process.env;
+  if (!/^[a-z0-9][a-z0-9.-]*$/i.test(host || '') || !/^[A-Za-z0-9_-]{40,128}$/.test(token || '')) {
+    throw new Error('CST deployment credentials are missing or invalid.');
+  }
+  const temporary = await mkdtemp(join(tmpdir(), 'pil-cst-deploy-'));
+  try {
+    const archivePath = join(temporary, 'release.tar.gz');
+    const tar = spawnSync('tar', ['-czf', archivePath, '-C', 'dist', '.'], { timeout: 30000, env: environment, encoding: 'utf8' });
+    if (tar.error || tar.status !== 0) throw new Error('Static release packaging failed.');
+    const archive = await readFile(archivePath);
+    if (archive.length > 24 * 1024 * 1024) throw new Error('Static release is too large.');
+    let receipt;
+    try {
+      receipt = await new Promise((resolve, reject) => {
+        const request = httpsRequest({ hostname: host, servername: 'pkuidv.com', path: '/_deploy/' + expected.component, method: 'POST', signal: AbortSignal.timeout(180000), headers: { Host: 'pkuidv.com', Authorization: 'Bearer ' + token, 'Content-Type': 'application/gzip', 'Content-Length': archive.length } }, response => {
+          let size = 0;
+          const chunks = [];
+          response.on('data', chunk => { size += chunk.length; if (size > 65536) request.destroy(); else chunks.push(chunk); });
+          response.on('error', reject);
+          response.on('end', () => { try { const result = JSON.parse(Buffer.concat(chunks).toString('utf8')); if (response.statusCode !== 200 || result.ok !== true) reject(new Error()); else resolve(result); } catch { reject(new Error()); } });
+        });
+        request.on('error', reject);
+        request.end(archive);
+      });
+    } catch { throw new Error('CST HTTPS upload failed. Raw credential-bearing request diagnostics are suppressed.'); }
+    if (receipt?.ok !== true || receipt.component !== expected.component || receipt.release !== expected.release) {
+      throw new Error('CST returned an unexpected deployment receipt.');
+    }
+    try {
+      for (const path of expected.paths) {
+        const actual = describeRelease(await remoteMetadata(host, path));
+        if (actual.release !== expected.release || actual.component !== expected.component) throw new Error();
+      }
+    } catch { throw new Error('Upload completed, but CST HTTPS release verification failed.'); }
+    if (expected.component === 'tactical') await writeFile('.deployment-state.json', JSON.stringify({ source_commit: metadata.source_commit, config_revision: metadata.config_revision, release: expected.release }) + '\n');
+    const message = 'CST static release activated and verified over HTTPS: ' + expected.component + '; ' + expected.release;
+    console.log(message);
+    if (process.env.GITHUB_STEP_SUMMARY) await appendFile(process.env.GITHUB_STEP_SUMMARY, message + '\n');
+    return receipt;
+  } finally {
+    await rm(temporary, { recursive: true, force: true });
+  }
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  try { await deploy(); } catch (error) { console.error(error.message); process.exitCode = 1; }
+}

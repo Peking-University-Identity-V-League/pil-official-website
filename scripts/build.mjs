@@ -27,6 +27,7 @@ export async function build({ root = projectRoot, homepageCommit } = {}) {
   // The only replaced directory is this project's generated dist.
   await rm(output, { recursive: true, force: true });
   await cp(publicDirectory, output, { recursive: true });
+  await rm(join(output, '_headers'), { force: true });
   await writeFile(join(output, '__release.json'), JSON.stringify({
     homepage_commit: homepageCommit,
   }, null, 2) + '\n');
@@ -35,5 +36,5 @@ export async function build({ root = projectRoot, homepageCommit } = {}) {
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   await build();
-  console.log('Built homepage in dist/ for Cloudflare Pages. Tactical paths are served by their Worker.');
+  console.log('Built homepage static release in dist/ for CST.');
 }

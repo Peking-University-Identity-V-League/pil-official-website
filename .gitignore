@@ -11,3 +11,5 @@ artifacts/
 *Zone.Identifier
 assets/source/*.zip
 *.log
+__pycache__/
+*.pyc

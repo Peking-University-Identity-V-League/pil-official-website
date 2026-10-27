@@ -1,9 +1,14 @@
-name: Deploy PIL homepage to Cloudflare Pages
+name: Deploy PIL homepage to CST
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      verify_public:
+        description: Check public DNS entry after deployment (disable only for initial server staging)
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -30,10 +35,14 @@ jobs:
       - name: Validate homepage assets and packaging
         run: |
           npm test
+          npm run test:receiver
           npm run verify
           npm run build
       - name: Publish and verify production deployment
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CST_HOST: ${{ secrets.CST_HOST }}
+          CST_DEPLOY_TOKEN: ${{ secrets.CST_DEPLOY_TOKEN }}
         run: npm run deploy
+      - name: Verify public homepage
+        if: github.event_name != 'workflow_dispatch' || inputs.verify_public
+        run: node scripts/verify-live.mjs
