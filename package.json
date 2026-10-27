@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "node scripts/serve.mjs",
     "build": "node scripts/build.mjs",
+    "deploy": "node scripts/deploy.mjs",
     "test": "node --test scripts/*.test.mjs",
     "preview": "node scripts/serve.mjs --dist",
     "assets": "node scripts/prepare-assets.mjs",
@@ -15,6 +16,7 @@
   "devDependencies": {
     "jsqr": "1.4.0",
     "qrcode": "1.5.4",
-    "sharp": "0.35.5"
+    "sharp": "0.35.5",
+    "wrangler": "4.153.0"
   }
 }
