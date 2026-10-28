@@ -1,15 +1,13 @@
 import { execFileSync } from 'node:child_process';
-import { readFile } from 'node:fs/promises';
 import { setTimeout } from 'node:timers/promises';
 
 const git = (...args) => execFileSync('git', args, { encoding: 'utf8' }).trim();
 const tactical = process.argv[2] === 'tactical';
 const commit = tactical ? git('-C', '.upstream', 'rev-parse', 'HEAD') : (process.env.GITHUB_SHA || git('rev-parse', 'HEAD'));
 const config = process.env.DEPLOY_CONFIG_REVISION || process.env.GITHUB_SHA || git('rev-parse', 'HEAD');
-const tokenFile = '/d299dc86d30762020c0333a483e502b2.txt';
 const paths = tactical
   ? ['/tactical-friend', '/zhanshuyanlian'].flatMap(prefix => ['/', '/js/bootstrap.js', '/css/style.css', '/locales/zh-CN.json', '/telemetry/privacy.js', '/__release.json'].map(path => prefix + path))
-  : ['/', '/styles.css', '/app.js', '/assets/hero-desktop.webp', '/assets/qr/wechat.svg', tokenFile, '/__release.json'];
+  : ['/', '/styles.css', '/app.js', '/assets/hero-desktop.webp', '/assets/qr/wechat.svg', '/__release.json'];
 
 async function verify() {
   for (const path of paths) {
@@ -21,8 +19,6 @@ async function verify() {
     } else if (path === '/' || tactical && path.endsWith('/')) {
       const html = await response.text();
       if (!html.includes('umami.pkuidv.com/script.js') || !html.includes(tactical ? 'homeMapGrid' : 'hero-title')) throw new Error('Unexpected entry page at ' + path);
-    } else if (path === tokenFile) {
-      if (await response.text() !== await readFile('public' + tokenFile, 'utf8')) throw new Error('Ownership TXT differs.');
     } else {
       const expected = path.endsWith('.js') ? 'javascript' : path.endsWith('.css') ? 'text/css' : path.endsWith('.json') ? 'application/json' : path.endsWith('.webp') ? 'image/webp' : 'image/svg+xml';
       if (!(response.headers.get('content-type') || '').includes(expected)) throw new Error('Unexpected static asset type at ' + path);

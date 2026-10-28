@@ -9,7 +9,6 @@
     "build": "node scripts/build.mjs",
     "deploy": "node scripts/deploy.mjs",
     "test": "node --test scripts/*.test.mjs",
-    "test:receiver": "python3 -m unittest discover -s ops -p 'test_*.py'",
     "preview": "node scripts/serve.mjs --dist",
     "assets": "node scripts/prepare-assets.mjs",
     "verify": "node scripts/verify.mjs"

@@ -4,7 +4,7 @@ import sharp from 'sharp';
 
 await mkdir('public/assets/logos', { recursive: true });
 await mkdir('public/assets/qr', { recursive: true });
-for (const file of ['bilibili.png', 'bilibili-wordmark.svg', 'douyin.png', 'wechat.svg', 'xiaohongshu.png']) {
+for (const file of ['bilibili.png', 'douyin.png', 'wechat.svg', 'xiaohongshu.png']) {
   await copyFile(`assets/logos/${file}`, `public/assets/logos/${file}`);
 }
 for (const variant of ['desktop', 'mobile']) {

@@ -13,3 +13,7 @@ assets/source/*.zip
 *.log
 __pycache__/
 *.pyc
+*.local.md
+.DS_Store
+Thumbs.db
+Desktop.ini
