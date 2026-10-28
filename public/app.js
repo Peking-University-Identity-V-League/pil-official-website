@@ -60,6 +60,85 @@ document.querySelector('#qr-download').addEventListener('click', event => {
 document.querySelectorAll('.hero-actions a').forEach(link => {
   link.addEventListener('click', () => trackEvent(`section_open_${link.hash.slice(1)}`));
 });
+document.querySelectorAll('[data-track]').forEach(element => {
+  element.addEventListener('click', () => trackEvent(element.dataset.track));
+});
+
+const headerShell = document.querySelector('#header-shell');
+const navLinks = [...document.querySelectorAll('.nav-link[data-nav]')];
+const trackedSections = ['top', 'about', 'tactical', 'channels']
+  .map(id => document.getElementById(id))
+  .filter(Boolean);
+
+function syncHeaderAndNav() {
+  const scrollY = window.scrollY;
+  headerShell?.classList.toggle('is-scrolled', scrollY > 18);
+
+  let currentId = 'top';
+  const threshold = scrollY + 180;
+  for (const section of trackedSections) {
+    if (section.id !== 'top' && section.offsetTop <= threshold) {
+      currentId = section.id;
+    }
+  }
+  for (const link of navLinks) {
+    if (link.dataset.nav === currentId) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+  }
+}
+
+window.addEventListener('scroll', syncHeaderAndNav, { passive: true });
+syncHeaderAndNav();
+
+if ('IntersectionObserver' in window) {
+  document.documentElement.classList.add('js-ready');
+  const observer = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    }
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal-section').forEach(section => observer.observe(section));
+}
+
+const tacTabs = [...document.querySelectorAll('.tac-tab[data-tac-mode]')];
+const tacPanes = [...document.querySelectorAll('.tac-pane[data-pane]')];
+const tacPreview = document.querySelector('.tactical-preview');
+
+function activateTacTab(tab, focus = false) {
+  const mode = tab.dataset.tacMode;
+  for (const item of tacTabs) {
+    const active = item === tab;
+    item.classList.toggle('is-active', active);
+    item.setAttribute('aria-selected', String(active));
+    item.tabIndex = active ? 0 : -1;
+  }
+  for (const pane of tacPanes) {
+    const active = pane.dataset.pane === mode;
+    pane.classList.toggle('is-active', active);
+    pane.hidden = !active;
+  }
+  if (tacPreview) tacPreview.dataset.activeMode = mode;
+  if (focus) tab.focus({ preventScroll: true });
+  trackEvent(`tactical_tab_${mode}`);
+}
+
+for (const [index, tab] of tacTabs.entries()) {
+  tab.addEventListener('click', () => activateTacTab(tab));
+  tab.addEventListener('keydown', event => {
+    let next;
+    if (event.key === 'ArrowDown') next = (index + 1) % tacTabs.length;
+    else if (event.key === 'ArrowUp') next = (index - 1 + tacTabs.length) % tacTabs.length;
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = tacTabs.length - 1;
+    else return;
+    event.preventDefault();
+    activateTacTab(tacTabs[next], true);
+  });
+}
 
 async function loadVisitorStats() {
   try {

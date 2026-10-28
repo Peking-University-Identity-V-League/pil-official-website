@@ -12,12 +12,28 @@
   <title>北京大学第五人格赛事｜Peking University ID5 League（PIL）</title>
   <link rel="icon" href="/assets/pil-favicon.png" type="image/png" sizes="96x96">
   <link rel="apple-touch-icon" href="/assets/pil-touch-icon.png" sizes="180x180">
-  <link rel="stylesheet" href="/styles.css?v=20261026-analytics">
-  <script src="/app.js?v=20261026-analytics" defer></script>
+  <link rel="stylesheet" href="/styles.css?v=20261028-v2">
+  <script src="/app.js?v=20261028-v2" defer></script>
   <script defer src="https://umami.pkuidv.com/script.js" data-website-id="d8c95849-978e-48d7-ba4d-7a783397609b" data-domains="pkuidv.com" data-exclude-hash="true" data-do-not-track="true"></script>
 </head>
 <body>
   <a class="skip-link" href="#channels">跳至官方平台</a>
+
+  <div class="header-shell" id="header-shell">
+    <header class="site-header wrap">
+      <a class="brand" href="#top" aria-label="北京大学第五人格赛事首页">
+        <img class="brand-logo" src="/assets/logos/pil-logo.webp" alt="PIL logo" width="70" height="56">
+        <span class="brand-text"><strong>北京大学第五人格赛事</strong><span>Peking University ID5 League</span></span>
+      </a>
+      <nav aria-label="主导航">
+        <a class="nav-link nav-home" href="#top" data-nav="top" aria-current="page">首页</a>
+        <a class="nav-link" href="#about" data-nav="about">关于我们</a>
+        <a class="nav-link" href="#tactical" data-nav="tactical">战术演习工具</a>
+        <a class="nav-link" href="#channels" data-nav="channels">关注我们</a>
+      </nav>
+    </header>
+  </div>
+
   <div class="welcome" id="top">
     <div class="scenery" aria-hidden="true">
       <picture>
@@ -26,16 +42,6 @@
       </picture>
     </div>
 
-    <header class="site-header wrap">
-      <a class="brand" href="#top" aria-label="北京大学第五人格赛事首页">
-        <img class="brand-logo" src="/assets/logos/pil-logo.webp" alt="PIL logo" width="70" height="56">
-        <span class="brand-text"><strong>北京大学第五人格赛事</strong><span>Peking University ID5 League</span></span>
-      </a>
-      <nav aria-label="主导航">
-        <a class="nav-home" href="#top" aria-current="page">首页</a>
-      </nav>
-    </header>
-
     <main>
       <section class="hero wrap" aria-labelledby="hero-title">
         <div class="hero-copy">
@@ -43,13 +49,14 @@
           <p class="hero-english" lang="en">Peking University ID5 League</p>
           <p class="hero-description">从未名湖畔到欧利蒂丝庄园，<br>和我们一起，为热爱而相聚。</p>
           <div class="hero-actions">
-            <a class="hero-button secondary-button" href="#about">关于我们</a>
-            <a class="hero-button primary-button" href="#channels">关注我们</a>
+            <a class="hero-button" href="#about">关于我们</a>
+            <a class="hero-button" href="#tactical">战术演习工具</a>
+            <a class="hero-button" href="#channels">关注我们</a>
           </div>
         </div>
       </section>
 
-      <section class="about wrap" id="about" aria-labelledby="about-title">
+      <section class="about wrap reveal-section" id="about" aria-labelledby="about-title">
         <div class="about-identity">
           <img src="/assets/logos/pil-logo.webp" alt="北京大学第五人格赛事 PIL logo" width="1061" height="842" loading="lazy">
         </div>
@@ -62,7 +69,106 @@
         </div>
       </section>
 
-      <section class="channels wrap" id="channels" aria-labelledby="channels-title">
+      <section class="tactical wrap reveal-section" id="tactical" aria-labelledby="tactical-title">
+        <div class="section-heading">
+          <h2 id="tactical-title">战术演习工具</h2>
+          <p class="section-description">战术面板 · 区域选择 · 密码机推演</p>
+        </div>
+
+        <div class="tactical-card">
+          <div class="tactical-main">
+            <div class="tactical-intro">
+              <h3>PIL 第五人格战术演练学习工具</h3>
+              <p>面向庄园访客的在线战术辅助系统，收录军工厂、圣心医院、红教堂、湖景村、月亮河公园、里奥的回忆、永眠镇、唐人街、不归林九大地图，支持路线测算、出生选点与刷机推演。</p>
+            </div>
+
+            <div class="tactical-tabs" role="tablist" aria-label="战术演习功能模块" aria-orientation="vertical">
+              <button class="tac-tab is-active" id="tac-tab-board" type="button" role="tab" aria-selected="true" aria-controls="tac-pane-board" tabindex="0" data-tac-mode="board">
+                <span class="tac-tab-num">01</span>
+                <span class="tac-tab-text">
+                  <strong>战术面板</strong>
+                  <span>放置角色与道具、绘制图形与文字、折线测距、计算移动时间并导出图片</span>
+                </span>
+              </button>
+
+              <button class="tac-tab" id="tac-tab-region" type="button" role="tab" aria-selected="false" aria-controls="tac-pane-region" tabindex="-1" data-tac-mode="region">
+                <span class="tac-tab-num">02</span>
+                <span class="tac-tab-text">
+                  <strong>区域选择</strong>
+                  <span>选择求生者与监管者出生区域、切换密码机组、查看封禁密码机与距离分析</span>
+                </span>
+              </button>
+
+              <button class="tac-tab" id="tac-tab-deduce" type="button" role="tab" aria-selected="false" aria-controls="tac-pane-deduce" tabindex="-1" data-tac-mode="deduce">
+                <span class="tac-tab-num">03</span>
+                <span class="tac-tab-text">
+                  <strong>密码机推演</strong>
+                  <span>手动标记点位有无密码机，根据地图规则自动推断剩余点位与候选布局</span>
+                </span>
+              </button>
+            </div>
+
+            <div class="tactical-footer">
+              <div class="tactical-maps" aria-label="支持地图">
+                <span>军工厂</span>
+                <span>圣心医院</span>
+                <span>红教堂</span>
+                <span>湖景村</span>
+                <span>月亮河公园</span>
+                <span>里奥的回忆</span>
+                <span>永眠镇</span>
+                <span>唐人街</span>
+                <span>不归林</span>
+              </div>
+              <a class="tactical-link-button" href="https://pkuidv.com/tactical-friend" data-track="tactical_friend_open">
+                <span>打开战术演习工具</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="tactical-preview" data-active-mode="board">
+            <div class="preview-topbar">
+              <span class="preview-title">战术演练工具预览</span>
+              <a class="preview-launch" href="https://pkuidv.com/tactical-friend" data-track="tactical_preview_open">进入工具 <span aria-hidden="true">↗</span></a>
+            </div>
+
+            <div class="preview-canvas">
+              <div class="tac-pane is-active" id="tac-pane-board" role="tabpanel" aria-labelledby="tac-tab-board" data-pane="board">
+                <a class="preview-image-link" href="https://pkuidv.com/tactical-friend" data-track="tactical_preview_image_board" aria-label="前往战术演习工具体验战术面板">
+                  <img class="preview-image" src="/assets/tactical-board.webp" alt="战术演练学习工具：军工厂战术面板操作演示" width="750" height="644" loading="lazy">
+                </a>
+                <div class="preview-caption">
+                  <span>战术面板 · 军工厂实机演示</span>
+                  <span>支持角色与道具布置、范围圈绘制及多段折线移速测算</span>
+                </div>
+              </div>
+
+              <div class="tac-pane" id="tac-pane-region" role="tabpanel" aria-labelledby="tac-tab-region" data-pane="region" hidden>
+                <a class="preview-image-link" href="https://pkuidv.com/tactical-friend" data-track="tactical_preview_image_region" aria-label="前往战术演习工具体验区域选择">
+                  <img class="preview-image" src="/assets/tactical-region.webp" alt="战术演练学习工具：军工厂区域选择与封机演示" width="750" height="644" loading="lazy">
+                </a>
+                <div class="preview-caption">
+                  <span>区域选择 · 军工厂实机演示</span>
+                  <span>直观规划求生者与监管者出生选点，自动计算封禁密码机</span>
+                </div>
+              </div>
+
+              <div class="tac-pane" id="tac-pane-deduce" role="tabpanel" aria-labelledby="tac-tab-deduce" data-pane="deduce" hidden>
+                <a class="preview-image-link" href="https://pkuidv.com/tactical-friend" data-track="tactical_preview_image_deduce" aria-label="前往战术演习工具体验密码机推演">
+                  <img class="preview-image" src="/assets/tactical-deduce.webp" alt="战术演练学习工具：军工厂密码机推演演示" width="750" height="644" loading="lazy">
+                </a>
+                <div class="preview-caption">
+                  <span>密码机推演 · 军工厂实机演示</span>
+                  <span>标记已知点位后自动联立刷机规律，锁定剩余密码机分布</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="channels wrap reveal-section" id="channels" aria-labelledby="channels-title">
         <div class="section-heading">
           <h2 id="channels-title">关注我们</h2>
           <p class="section-description">赛事资讯 · 精彩瞬间 · 社团日常</p>

@@ -1,7 +1,7 @@
 import { writeFile } from 'node:fs/promises';
-const chars = [...new Set('北京大学第五人格赛事关于关注我们PIL庄园指北欢迎你的加入！燕园·')].join('');
+const chars = [...new Set('北京大学第五人格赛事关于关注我们PIL庄园指北欢迎你的加入！燕园·从未名湖畔到欧利蒂丝战术演习练预览工具赛训专区官方矩阵社团简介推演面板区域选择密码机九大地图全覆盖创立活跃侦探友谊赛场张洞悉全局每秒博弈哔哩抖音微信公众号小红书0123456789+，。')].join('');
 const url = `https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600&text=${encodeURIComponent(chars)}`;
-const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 Chrome/130.0.0.0 Safari/537.36' } });
+const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36' } });
 if (!res.ok) throw new Error(`Font CSS: ${res.status}`);
 const css = await res.text();
 const match = css.match(/url\((https:[^)]+)\)/);
