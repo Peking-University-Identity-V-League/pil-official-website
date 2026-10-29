@@ -240,20 +240,23 @@
   text-align: center;
   white-space: nowrap;
   font-family: var(--serif);
-  font-size: 12cqi;
-  letter-spacing: 0.1em;
+  font-size: 10cqi;
   color: #3d3124;
 }
 
 .is-hunter .mock-to {
   color: #b39158;
   border-bottom-color: rgba(179, 145, 88, 0.4);
+  font-size: 11cqi;
+  letter-spacing: 0.2em;
 }
 
-.lottery-vs {
-  font: italic 13px Georgia, serif;
-  letter-spacing: 1px;
-  color: #b39158;
+/* 与工具一致：求生者与监管者之间是一条黄铜竖线 */
+.lottery-divider {
+  align-self: stretch;
+  width: 1px;
+  margin-inline: 4px;
+  background: linear-gradient(transparent, rgba(179, 145, 88, 0.45) 15%, rgba(179, 145, 88, 0.45) 85%, transparent);
 }
 
 @media (hover: hover) {
@@ -288,31 +291,60 @@
   display: grid;
   gap: 8px;
   min-width: 0;
+  flex: 1;
+}
+
+/* 与工具的人格面板标题一致：左边“人格”，右边“复制人格树” */
+.lottery-result-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .lottery-result-label {
-  font-size: 12px;
-  letter-spacing: 1px;
+  font-family: var(--serif);
+  font-size: 13px;
+  letter-spacing: 0.3em;
   color: #61d5dd;
+}
+
+.lottery-result-copy {
+  padding: 1px 8px;
+  font-size: 11px;
+  color: #9b958a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
 }
 
 .lottery-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 4px 5px;
 }
 
 .lottery-chips span {
-  padding: 1px 7px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 6px;
   border-radius: 2px;
   font-size: 12px;
   color: #e6decd;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.lottery-chips small {
+  font-size: 11px;
+  color: #61d5dd;
 }
 
 .lottery-chips .is-ult {
+  flex-basis: 100%;
+  padding: 2px 8px;
+  font-size: 13px;
   color: #ddd0b1;
-  background: rgba(179, 145, 88, 0.14);
+  background: rgba(179, 145, 88, 0.1);
   border-left: 2px solid #b39158;
 }
 
@@ -346,7 +378,7 @@
   .lottery-stage { padding: 18px 12px 14px; }
   .lottery-lineup { gap: 6px; }
   .mock-to { display: none; }
-  .lottery-vs { font-size: 11px; }
+  .lottery-divider { margin-inline: 2px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
