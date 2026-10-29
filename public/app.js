@@ -66,7 +66,7 @@ document.querySelectorAll('[data-track]').forEach(element => {
 
 const headerShell = document.querySelector('#header-shell');
 const navLinks = [...document.querySelectorAll('.nav-link[data-nav]')];
-const trackedSections = ['top', 'about', 'tactical', 'channels']
+const trackedSections = ['top', 'about', 'tactical', 'lottery', 'channels']
   .map(id => document.getElementById(id))
   .filter(Boolean);
 

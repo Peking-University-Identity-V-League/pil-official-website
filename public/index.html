@@ -13,7 +13,8 @@
   <link rel="icon" href="/assets/pil-favicon.png" type="image/png" sizes="96x96">
   <link rel="apple-touch-icon" href="/assets/pil-touch-icon.png" sizes="180x180">
   <link rel="stylesheet" href="/styles.css?v=20261028-v2">
-  <script src="/app.js?v=20261028-v2" defer></script>
+  <link rel="stylesheet" href="/lottery-section.css?v=20261029-v1">
+  <script src="/app.js?v=20261029-v1" defer></script>
   <script defer src="https://umami.pkuidv.com/script.js" data-website-id="d8c95849-978e-48d7-ba4d-7a783397609b" data-domains="pkuidv.com" data-exclude-hash="true" data-do-not-track="true"></script>
 </head>
 <body>
@@ -28,7 +29,8 @@
       <nav aria-label="主导航">
         <a class="nav-link nav-home" href="#top" data-nav="top" aria-current="page">首页</a>
         <a class="nav-link" href="#about" data-nav="about">关于我们</a>
-        <a class="nav-link" href="#tactical" data-nav="tactical">战术演习工具</a>
+        <a class="nav-link" href="#tactical" data-nav="tactical">战术演习<span class="nav-extra">工具</span></a>
+        <a class="nav-link" href="#lottery" data-nav="lottery">随机抽取<span class="nav-extra">工具</span></a>
         <a class="nav-link" href="#channels" data-nav="channels">关注我们</a>
       </nav>
     </header>
@@ -51,6 +53,7 @@
           <div class="hero-actions">
             <a class="hero-button" href="#about">关于我们</a>
             <a class="hero-button" href="#tactical">战术演习工具</a>
+            <a class="hero-button" href="#lottery">随机抽取工具</a>
             <a class="hero-button" href="#channels">关注我们</a>
           </div>
         </div>
@@ -163,6 +166,114 @@
                   <span>标记已知点位后自动联立刷机规律，锁定剩余密码机分布</span>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="lottery wrap reveal-section" id="lottery" aria-labelledby="lottery-title">
+        <div class="section-heading">
+          <h2 id="lottery-title">随机抽取工具</h2>
+          <p class="section-description">随机阵容 · 人格配置 · 辅助特质</p>
+        </div>
+
+        <div class="lottery-card">
+          <div class="lottery-main">
+            <div class="lottery-intro">
+              <h3>PIL 第五人格随机抽取工具</h3>
+              <p>为友谊赛、娱乐赛和群友开黑准备一局随机对局：一次抽出 4 名不重复的求生者和 1 名监管者，按 130 点人格点数为每个人生成人格配置，监管者另配一个辅助特质。</p>
+            </div>
+
+            <ul class="lottery-features">
+              <li>
+                <strong>人格配置</strong>
+                <span>求生者与监管者分别设置终极人格数量，随机或指定 0、1、2 个；求生者可以选择必点「绝处逢生」</span>
+              </li>
+              <li>
+                <strong>角色池与单项重抽</strong>
+                <span>移出没有或不想抽到的角色；不满意时只重抽某个角色、某套人格或辅助特质</span>
+              </li>
+              <li>
+                <strong>揭晓与分享</strong>
+                <span>信封洗牌、火漆碎裂、翻面揭晓，监管者最后登场；结果可一键复制，直接发到群里</span>
+              </li>
+            </ul>
+
+            <div class="lottery-footer">
+              <div class="lottery-tags" aria-label="收录内容">
+                <span>53 名求生者</span>
+                <span>36 名监管者</span>
+                <span>80 个人格</span>
+                <span>8 种辅助特质</span>
+              </div>
+              <a class="lottery-link-button" href="https://pkuidv.com/lottery/" data-track="lottery_open">
+                <span>打开随机抽取工具</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lottery-preview">
+            <div class="preview-topbar">
+              <span class="preview-title">随机抽取工具预览</span>
+              <a class="preview-launch" href="https://pkuidv.com/lottery/" data-track="lottery_preview_open">进入工具 <span aria-hidden="true">↗</span></a>
+            </div>
+
+            <a class="lottery-stage" href="https://pkuidv.com/lottery/" data-track="lottery_preview_image" aria-label="前往随机抽取工具，抽取一局 4v1 阵容">
+              <span class="lottery-lineup" aria-hidden="true">
+                <span class="mock-envelope"><span class="mock-seal">庄</span><span class="mock-to">求生者</span></span>
+                <span class="mock-envelope"><span class="mock-seal">庄</span><span class="mock-to">求生者</span></span>
+                <span class="mock-envelope"><span class="mock-seal">庄</span><span class="mock-to">求生者</span></span>
+                <span class="mock-envelope"><span class="mock-seal">庄</span><span class="mock-to">求生者</span></span>
+                <span class="lottery-vs">VS</span>
+                <span class="mock-envelope is-hunter"><span class="mock-seal">猎</span><span class="mock-to">监管者</span></span>
+              </span>
+
+              <span class="lottery-result" aria-hidden="true">
+                <svg class="mock-web" viewBox="-100 -100 200 200" width="88" height="88">
+                  <g class="mock-edges">
+                    <path d="M0 0V-88M0 0H88M0 0V88M0 0H-88M0 -22L-18 -38M0 -22L18 -38M22 0L38 -18M22 0L38 18M0 22L-18 38M0 22L18 38M-22 0L-38 -18M-22 0L-38 18"/>
+                  </g>
+                  <g class="mock-edges is-lit">
+                    <path d="M0 0H-88M0 0V88M-22 0L-38 -18M0 0H22L38 18M0 0V-22L18 -38"/>
+                  </g>
+                  <g class="mock-nodes">
+                    <circle cx="0" cy="-22" r="7"/><circle cx="0" cy="-44" r="7"/><circle cx="0" cy="-66" r="7"/>
+                    <circle cx="22" cy="0" r="7"/><circle cx="44" cy="0" r="7"/><circle cx="66" cy="0" r="7"/>
+                    <circle cx="0" cy="22" r="7"/><circle cx="0" cy="44" r="7"/><circle cx="0" cy="66" r="7"/>
+                    <circle cx="-22" cy="0" r="7"/><circle cx="-44" cy="0" r="7"/><circle cx="-66" cy="0" r="7"/>
+                    <circle cx="-18" cy="-38" r="6"/><circle cx="18" cy="-38" r="6"/><circle cx="38" cy="-18" r="6"/><circle cx="38" cy="18" r="6"/>
+                    <circle cx="-18" cy="38" r="6"/><circle cx="18" cy="38" r="6"/><circle cx="-38" cy="-18" r="6"/><circle cx="-38" cy="18" r="6"/>
+                  </g>
+                  <g class="mock-nodes is-lit">
+                    <circle cx="-22" cy="0" r="7"/><circle cx="-44" cy="0" r="7"/><circle cx="-66" cy="0" r="7"/>
+                    <circle cx="0" cy="22" r="7"/><circle cx="0" cy="44" r="7"/><circle cx="0" cy="66" r="7"/>
+                    <circle cx="-38" cy="-18" r="6"/><circle cx="22" cy="0" r="7"/><circle cx="38" cy="18" r="6"/>
+                    <circle cx="0" cy="-22" r="7"/><circle cx="18" cy="-38" r="6"/>
+                  </g>
+                  <g class="mock-ults">
+                    <circle cx="0" cy="-88" r="9"/><circle cx="88" cy="0" r="9"/>
+                  </g>
+                  <g class="mock-ults is-lit">
+                    <circle cx="-88" cy="0" r="9"/><circle cx="0" cy="88" r="9"/>
+                  </g>
+                  <circle class="mock-hub" r="5"/>
+                </svg>
+                <span class="lottery-result-text">
+                  <span class="lottery-result-label">示例人格</span>
+                  <span class="lottery-chips">
+                    <span class="is-ult">膝跳反射</span>
+                    <span class="is-ult">化险为夷</span>
+                    <span>绝处逢生</span>
+                    <span>共 26 层</span>
+                  </span>
+                </span>
+              </span>
+            </a>
+
+            <div class="preview-caption">
+              <span>庄园来信 · 揭晓动画</span>
+              <span>信封发出后依次拆封，人格树沿路径从中心点亮</span>
             </div>
           </div>
         </div>

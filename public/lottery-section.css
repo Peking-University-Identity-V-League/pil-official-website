@@ -1,0 +1,354 @@
+/* ==========================================================================
+   随机抽取工具区块（在 styles.css 之后加载）
+   结构与「战术演习工具」区块保持一致；右侧预览用纯 CSS/SVG 模拟工具的夜色桌面。
+   ========================================================================== */
+
+/* 导航与首屏按钮：为新增入口腾出空间 */
+@media (max-width: 700px) {
+  .nav-extra { display: none; }
+
+  .hero-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 320px;
+    margin-inline: auto;
+  }
+}
+
+/* ------------------------------------------------------------------ 区块 */
+.lottery {
+  position: relative;
+  padding-block: 48px 52px;
+  border-bottom: 1px solid var(--line);
+}
+
+.lottery-card {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 28px;
+  padding: 28px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  box-shadow:
+    0 8px 28px rgba(103, 85, 59, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.lottery-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.lottery-intro h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.5px;
+}
+
+.lottery-intro p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.9;
+  color: #60665d;
+}
+
+.lottery-features {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.lottery-features li {
+  display: grid;
+  gap: 3px;
+  padding: 13px 15px;
+  border-radius: 8px;
+  background: #fbf9f3;
+  border: 1px solid #e9e3d7;
+}
+
+.lottery-features strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.lottery-features span {
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.lottery-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #ebe6dc;
+}
+
+.lottery-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.lottery-tags span {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  color: #666a60;
+  background: #f3efe6;
+  border: 1px solid #e5dfd2;
+}
+
+.lottery-link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  padding: 0 20px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  color: var(--red);
+  background: rgba(148, 7, 10, 0.06);
+  border: 1px solid rgba(148, 7, 10, 0.24);
+  transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
+  flex-shrink: 0;
+}
+
+.lottery-link-button:hover {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fffdf8;
+  transform: translateY(-1px);
+}
+
+/* ------------------------------------------------------------------ 预览：工具的夜色桌面 */
+.lottery-preview {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 8px;
+  background: #fdfbf6;
+  border: 1px solid #e6e0d3;
+}
+
+.lottery-preview .preview-topbar { margin-bottom: 0; }
+
+.lottery-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  padding: 26px 20px 20px;
+  border-radius: 6px;
+  border: 1px solid #2a3138;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(179, 145, 88, 0.22), transparent 70%),
+    #181c21;
+  transition: box-shadow 0.3s;
+}
+
+.lottery-stage:hover {
+  box-shadow: 0 10px 30px rgba(36, 30, 24, 0.22);
+}
+
+.lottery-lineup {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) auto minmax(0, 1.3fr);
+  align-items: center;
+  gap: 10px;
+}
+
+.mock-envelope {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  container-type: inline-size;
+  border-radius: 4px;
+  background: radial-gradient(ellipse at 50% 42%, #e9dfc5 0%, #ddd0b1 45%, #c2ae86 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(90, 70, 40, 0.5),
+    inset 0 0 0 4px rgba(255, 250, 235, 0.18),
+    0 6px 14px rgba(0, 0, 0, 0.45);
+  transition: transform 0.35s ease;
+}
+
+.mock-envelope::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 46%;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background: linear-gradient(180deg, #d6c7a3, #c5b087);
+}
+
+.mock-envelope.is-hunter {
+  background: radial-gradient(ellipse at 50% 42%, #3b3134 0%, #2a2225 50%, #1b1517 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(179, 145, 88, 0.55),
+    inset 0 0 18px rgba(184, 58, 60, 0.35),
+    0 0 26px rgba(184, 40, 44, 0.4);
+}
+
+.mock-envelope.is-hunter::before {
+  background: linear-gradient(180deg, #382d30, #2d2427);
+}
+
+.mock-seal {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 46%;
+  width: 38%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  border-radius: 48% 52% 50% 46% / 50% 46% 54% 50%;
+  background: radial-gradient(circle at 34% 30%, #b83a3c, #8f2327 55%, #5e1214 100%);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  font-family: var(--serif);
+  font-size: 16cqi;
+  font-weight: 600;
+  line-height: 1;
+  color: rgba(52, 6, 8, 0.62);
+}
+
+.mock-to {
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 11%;
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgba(61, 49, 36, 0.35);
+  text-align: center;
+  white-space: nowrap;
+  font-family: var(--serif);
+  font-size: 12cqi;
+  letter-spacing: 0.1em;
+  color: #3d3124;
+}
+
+.is-hunter .mock-to {
+  color: #b39158;
+  border-bottom-color: rgba(179, 145, 88, 0.4);
+}
+
+.lottery-vs {
+  font: italic 13px Georgia, serif;
+  letter-spacing: 1px;
+  color: #b39158;
+}
+
+@media (hover: hover) {
+  .lottery-stage:hover .mock-envelope:nth-child(odd) { transform: translateY(-3px) rotate(-1.5deg); }
+  .lottery-stage:hover .mock-envelope:nth-child(even) { transform: translateY(-2px) rotate(1.2deg); }
+}
+
+/* 示例结果：人格树缩略图 */
+.lottery-result {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(179, 145, 88, 0.25);
+}
+
+.mock-web {
+  flex: none;
+  width: 88px;
+  height: 88px;
+}
+
+.mock-edges path { fill: none; stroke: rgba(255, 255, 255, 0.12); stroke-width: 4; stroke-linecap: round; }
+.mock-edges.is-lit path { stroke: #61d5dd; stroke-width: 5; }
+.mock-nodes circle { fill: #1b2026; stroke: rgba(255, 255, 255, 0.18); stroke-width: 2; }
+.mock-nodes.is-lit circle { fill: #1c3337; stroke: #61d5dd; stroke-width: 3; }
+.mock-ults circle { fill: #1b2026; stroke: rgba(179, 145, 88, 0.45); stroke-width: 2; stroke-dasharray: 4 4; }
+.mock-ults.is-lit circle { fill: #1c3337; stroke: #b39158; stroke-width: 4; stroke-dasharray: none; }
+.mock-hub { fill: #b39158; }
+
+.lottery-result-text {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.lottery-result-label {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #61d5dd;
+}
+
+.lottery-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.lottery-chips span {
+  padding: 1px 7px;
+  border-radius: 2px;
+  font-size: 12px;
+  color: #e6decd;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.lottery-chips .is-ult {
+  color: #ddd0b1;
+  background: rgba(179, 145, 88, 0.14);
+  border-left: 2px solid #b39158;
+}
+
+/* ------------------------------------------------------------------ 响应式 */
+@media (max-width: 1100px) {
+  .lottery-card { grid-template-columns: 1fr; padding: 24px; }
+}
+
+@media (max-width: 700px) {
+  .lottery { padding-block: 30px 32px; }
+
+  .lottery-card {
+    padding: 18px 16px;
+    gap: 20px;
+    background: #fffefa;
+  }
+
+  .lottery-intro h3 { font-size: 16px; }
+  .lottery-intro p { font-size: 12.5px; line-height: 1.85; }
+  .lottery-features li { padding: 11px 12px; }
+  .lottery-features strong { font-size: 13px; }
+  .lottery-features span { font-size: 11.5px; }
+
+  .lottery-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .lottery-link-button { justify-content: center; }
+  .lottery-preview { padding: 13px; }
+  .lottery-stage { padding: 18px 12px 14px; }
+  .lottery-lineup { gap: 6px; }
+  .mock-to { display: none; }
+  .lottery-vs { font-size: 11px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lottery-stage:hover .mock-envelope { transform: none; }
+}
