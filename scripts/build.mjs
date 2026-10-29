@@ -2,6 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { cp, lstat, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { precompress, versionAssets } from './static-assets.mjs';
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 async function rejectSymlinks(directory) {
@@ -28,10 +29,13 @@ export async function build({ root = projectRoot, homepageCommit } = {}) {
   await rm(output, { recursive: true, force: true });
   await cp(publicDirectory, output, { recursive: true });
   await rm(join(output, '_headers'), { force: true });
+  const assets = await versionAssets(output);
   await writeFile(join(output, '__release.json'), JSON.stringify({
     homepage_commit: homepageCommit,
+    assets,
   }, null, 2) + '\n');
-  return { homepage_commit: homepageCommit };
+  await precompress(output);
+  return { homepage_commit: homepageCommit, assets };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

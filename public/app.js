@@ -1,8 +1,8 @@
 const platforms = {
-  bilibili: { title: '北京大学第五人格赛事', platform: '哔哩哔哩 / Bilibili', instruction: '打开哔哩哔哩，扫一扫关注我们' },
-  douyin: { title: '北大第五人格赛事', platform: '抖音 / Douyin', instruction: '打开抖音，扫一扫关注我们' },
-  wechat: { title: 'PIL 庄园指北', platform: '微信公众号 / Wechat', instruction: '打开微信，扫一扫关注我们' },
-  xiaohongshu: { title: '北京大学第五人格赛事', platform: '小红书 / Rednote', instruction: '打开小红书，扫一扫关注我们' }
+  bilibili: { title: '北京大学第五人格赛事', platform: '哔哩哔哩 / Bilibili', instruction: '打开哔哩哔哩，扫一扫关注我们', qr: '/assets/qr/bilibili.png' },
+  douyin: { title: '北大第五人格赛事', platform: '抖音 / Douyin', instruction: '打开抖音，扫一扫关注我们', qr: '/assets/qr/douyin.png' },
+  wechat: { title: 'PIL 庄园指北', platform: '微信公众号 / Wechat', instruction: '打开微信，扫一扫关注我们', qr: '/assets/qr/wechat.png' },
+  xiaohongshu: { title: '北京大学第五人格赛事', platform: '小红书 / Rednote', instruction: '打开小红书，扫一扫关注我们', qr: '/assets/qr/xiaohongshu.png' }
 };
 const dialog = document.querySelector('.qr-dialog');
 let previousFocus;
@@ -23,10 +23,10 @@ function openQr(key, trigger) {
   document.querySelector('#qr-title').textContent = info.title;
   document.querySelector('#qr-instruction').textContent = info.instruction;
   const image = document.querySelector('#qr-large');
-  image.src = `/assets/qr/${key}.png`;
+  image.src = info.qr;
   image.alt = `${info.title}${info.platform.split(' / ')[0]}二维码`;
   const download = document.querySelector('#qr-download');
-  download.href = `/assets/qr/${key}.png`;
+  download.href = info.qr;
   download.download = `${info.title}-${key}-二维码.png`;
   download.dataset.platform = key;
   dialog.showModal();
