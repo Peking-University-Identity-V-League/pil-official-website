@@ -26,6 +26,8 @@ npm run preview
 
 构建结果位于 `dist/`。本地预览包含官网首页，战术演习工具（[/tactical-friend](https://pkuidv.com/tactical-friend)）和随机抽取工具（[/lottery/](https://pkuidv.com/lottery/)）通过线上入口访问。
 
+三维地图由管理员独立安装，发布包、Nginx 配置和回滚步骤见 [三维地图管理员说明](docs/maps-3d-admin.md)。地图验收通过后再发布二维切换入口。
+
 ## 内容维护
 
 - `public/`：网页与发布素材。`lottery-section.css` 是随机抽取工具区块的样式，在 `styles.css` 之后加载。
