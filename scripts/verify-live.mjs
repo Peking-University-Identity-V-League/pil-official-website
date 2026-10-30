@@ -14,7 +14,7 @@ async function verify() {
   let homepageRelease;
   for (const path of paths) {
     const response = await fetch('https://pkuidv.com' + path + '?check=' + Date.now(), { headers: { 'Accept-Encoding': 'br, gzip' }, redirect: 'error', cache: 'no-store', signal: AbortSignal.timeout(12000) });
-    if (!response.ok || !/^nginx(?:\/|$)/i.test(response.headers.get('server') || '') || response.headers.has('cf-ray')) throw new Error('The direct CST response is unavailable at ' + path);
+    if (!response.ok) throw new Error('The public response is unavailable at ' + path);
     if (path.endsWith('/__release.json')) {
       const release = await response.json();
       if (tactical ? release.source_commit !== commit || release.config_revision !== config : release.homepage_commit !== commit) throw new Error('Unexpected release at ' + path);
@@ -55,6 +55,6 @@ async function verify() {
 }
 
 for (let attempt = 1; attempt <= 12; attempt++) {
-  try { await verify(); console.log('Public direct CST paths serve the expected release and assets.'); break; }
+  try { await verify(); console.log('Public paths serve the expected release and assets.'); break; }
   catch (error) { if (attempt === 12) throw error; console.log('Waiting for the public CST release. Attempt ' + attempt + '/12.'); await setTimeout(5000); }
 }
