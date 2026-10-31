@@ -1,6 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { setTimeout } from 'node:timers/promises';
+import { locales } from './i18n.mjs';
 
 const git = (...args) => execFileSync('git', args, { encoding: 'utf8' }).trim();
 const tactical = process.argv[2] === 'tactical';
@@ -8,7 +9,7 @@ const commit = tactical ? git('-C', '.upstream', 'rev-parse', 'HEAD') : (process
 const config = process.env.DEPLOY_CONFIG_REVISION || process.env.GITHUB_SHA || git('rev-parse', 'HEAD');
 const paths = tactical
   ? ['/tactical-friend', '/zhanshuyanlian'].flatMap(prefix => ['/', '/js/bootstrap.js', '/css/style.css', '/locales/zh-CN.json', '/telemetry/privacy.js', '/__release.json'].map(path => prefix + path))
-  : ['/', '/styles.css', '/app.js', '/assets/hero-desktop.webp', '/assets/qr/wechat.svg', '/__release.json'];
+  : ['/', ...Object.keys(locales).map(code => `/${code}/`), '/styles.css', '/app.js', '/assets/hero-desktop.webp', '/assets/qr/wechat.svg', '/__release.json'];
 
 async function verify() {
   let homepageRelease;
@@ -19,7 +20,7 @@ async function verify() {
       const release = await response.json();
       if (tactical ? release.source_commit !== commit || release.config_revision !== config : release.homepage_commit !== commit) throw new Error('Unexpected release at ' + path);
       if (!tactical) homepageRelease = release;
-    } else if (path === '/' || tactical && path.endsWith('/')) {
+    } else if (path === '/' || /^\/[a-z]{2}\/$/.test(path) || tactical && path.endsWith('/')) {
       const html = await response.text();
       if (!html.includes('umami.pkuidv.com/script.js') || !html.includes(tactical ? 'homeMapGrid' : 'hero-title')) throw new Error('Unexpected entry page at ' + path);
       if (!tactical && (response.headers.get('content-encoding') !== 'br' || response.headers.get('cache-control') !== 'no-cache' || !html.includes('/_static/'))) throw new Error('Homepage compression or cache policy is missing.');

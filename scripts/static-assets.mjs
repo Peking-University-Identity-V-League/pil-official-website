@@ -50,9 +50,10 @@ export async function versionAssets(output) {
     return versioned;
   }
   for (const url of source.keys()) resolve(url);
-  const htmlPath = join(output, 'index.html');
-  const html = replaceReferences(await readFile(htmlPath, 'utf8'), resolve);
-  await writeFile(htmlPath, html);
+  for (const name of (await filesIn(output)).filter(file => extname(file) === '.html')) {
+    const htmlPath = join(output, name);
+    await writeFile(htmlPath, replaceReferences(await readFile(htmlPath, 'utf8'), resolve));
+  }
   for (const [url, bytes] of emitted) {
     const file = join(output, url.slice(1));
     await mkdir(dirname(file), { recursive: true });

@@ -1,4 +1,4 @@
-import { mkdir } from 'node:fs/promises';
+import { copyFile, mkdir } from 'node:fs/promises';
 import sharp from 'sharp';
 
 await mkdir('public/assets/logos', { recursive: true });
@@ -6,6 +6,7 @@ const original = 'assets/source/pil-logo.png';
 // Keep the complete supplied artwork and its proportions; only encode/resize.
 await sharp(original).resize({ width: 640, withoutEnlargement: true })
   .webp({ quality: 92 }).toFile('public/assets/logos/pil-logo.webp');
+await sharp(original).resize({ width: 160 }).webp({ quality: 85 }).toFile('public/assets/logos/pil-logo-small.webp');
 for (const [size, filename] of [[96, 'pil-favicon.png'], [180, 'pil-touch-icon.png']]) {
   await sharp(original).resize(size, size, { fit: 'contain', background: '#ffffff' })
     .png().toFile(`public/assets/${filename}`);
@@ -20,4 +21,5 @@ const alpha = await pkuOriginal.extractChannel('alpha').raw().toBuffer();
 await sharp({ create: { width, height, channels: 3, background: '#94070a' } })
   .joinChannel(alpha, { raw: { width, height, channels: 1 } })
   .png().toFile('public/assets/logos/pku-chinese-wordmark.png');
-console.log('Prepared official PKU wordmark in the specified Web color #94070A.');
+await copyFile('assets/source/pku-english-wordmark.svg', 'public/assets/logos/pku-english-wordmark.svg');
+console.log('Prepared official PKU wordmarks in the specified Web color #94070A.');

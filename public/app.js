@@ -1,9 +1,11 @@
 const platforms = {
-  bilibili: { title: '北京大学第五人格赛事', platform: '哔哩哔哩 / Bilibili', instruction: '打开哔哩哔哩，扫一扫关注我们', qr: '/assets/qr/bilibili.png' },
-  douyin: { title: '北大第五人格赛事', platform: '抖音 / Douyin', instruction: '打开抖音，扫一扫关注我们', qr: '/assets/qr/douyin.png' },
-  wechat: { title: 'PIL 庄园指北', platform: '微信公众号 / Wechat', instruction: '打开微信，扫一扫关注我们', qr: '/assets/qr/wechat.png' },
-  xiaohongshu: { title: '北京大学第五人格赛事', platform: '小红书 / Rednote', instruction: '打开小红书，扫一扫关注我们', qr: '/assets/qr/xiaohongshu.png' }
+  bilibili: { title: '北京大学第五人格赛事', qr: '/assets/qr/bilibili.png' },
+  douyin: { title: '北大第五人格赛事', qr: '/assets/qr/douyin.png' },
+  wechat: { title: 'PIL 庄园指北', qr: '/assets/qr/wechat.png' },
+  xiaohongshu: { title: '北京大学第五人格赛事', qr: '/assets/qr/xiaohongshu.png' }
 };
+// A phone cannot scan its own screen, so touch devices get the save-then-scan route.
+const usesPhone = window.matchMedia('(pointer: coarse)').matches;
 const dialog = document.querySelector('.qr-dialog');
 let previousFocus;
 
@@ -18,16 +20,19 @@ function trackEvent(name) {
 function openQr(key, trigger) {
   const info = platforms[key];
   if (!info) return;
+  // Localized copy lives in the page, so app.js stays the same for every language.
+  const app = document.querySelector(`.platform-card.${key}`).dataset.app;
+  const fill = template => template.replace('{app}', app);
   previousFocus = trigger;
-  document.querySelector('#qr-platform').textContent = info.platform;
+  document.querySelector('#qr-platform').textContent = app;
   document.querySelector('#qr-title').textContent = info.title;
-  document.querySelector('#qr-instruction').textContent = info.instruction;
+  document.querySelector('#qr-instruction').textContent = fill(usesPhone ? dialog.dataset.scanPhone : dialog.dataset.scan);
   const image = document.querySelector('#qr-large');
   image.src = info.qr;
-  image.alt = `${info.title}${info.platform.split(' / ')[0]}二维码`;
+  image.alt = fill(dialog.dataset.alt);
   const download = document.querySelector('#qr-download');
   download.href = info.qr;
-  download.download = `${info.title}-${key}-二维码.png`;
+  download.download = `PIL-${key}-QR.png`;
   download.dataset.platform = key;
   dialog.showModal();
   document.body.classList.add('dialog-open');
@@ -66,31 +71,34 @@ document.querySelectorAll('[data-track]').forEach(element => {
 
 const headerShell = document.querySelector('#header-shell');
 const navLinks = [...document.querySelectorAll('.nav-link[data-nav]')];
-const trackedSections = ['top', 'about', 'tactical', 'lottery', 'channels']
+const trackedSections = ['about', 'tactical', 'lottery', 'channels']
   .map(id => document.getElementById(id))
   .filter(Boolean);
 
-function syncHeaderAndNav() {
-  const scrollY = window.scrollY;
-  headerShell?.classList.toggle('is-scrolled', scrollY > 18);
-
-  let currentId = 'top';
-  const threshold = scrollY + 180;
-  for (const section of trackedSections) {
-    if (section.id !== 'top' && section.offsetTop <= threshold) {
-      currentId = section.id;
-    }
-  }
-  for (const link of navLinks) {
-    if (link.dataset.nav === currentId) link.setAttribute('aria-current', 'page');
-    else link.removeAttribute('aria-current');
-  }
-}
-
-window.addEventListener('scroll', syncHeaderAndNav, { passive: true });
-syncHeaderAndNav();
-
 if ('IntersectionObserver' in window) {
+  const scrollMarker = document.createElement('div');
+  scrollMarker.className = 'scroll-marker';
+  scrollMarker.setAttribute('aria-hidden', 'true');
+  document.body.prepend(scrollMarker);
+  new IntersectionObserver(([entry]) => {
+    headerShell?.classList.toggle('is-scrolled', !entry.isIntersecting);
+  }).observe(scrollMarker);
+
+  // A thin band near the top of the viewport decides which section the nav highlights.
+  const inBand = new Set();
+  const navObserver = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) inBand.add(entry.target);
+      else inBand.delete(entry.target);
+    }
+    const currentId = trackedSections.findLast(section => inBand.has(section))?.id ?? 'top';
+    for (const link of navLinks) {
+      if (link.dataset.nav === currentId) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    }
+  }, { rootMargin: '-20% 0px -79% 0px' });
+  trackedSections.forEach(section => navObserver.observe(section));
+
   document.documentElement.classList.add('js-ready');
   const observer = new IntersectionObserver(entries => {
     for (const entry of entries) {
@@ -106,7 +114,6 @@ if ('IntersectionObserver' in window) {
 
 const tacTabs = [...document.querySelectorAll('.tac-tab[data-tac-mode]')];
 const tacPanes = [...document.querySelectorAll('.tac-pane[data-pane]')];
-const tacPreview = document.querySelector('.tactical-preview');
 
 function activateTacTab(tab, focus = false) {
   const mode = tab.dataset.tacMode;
@@ -121,7 +128,6 @@ function activateTacTab(tab, focus = false) {
     pane.classList.toggle('is-active', active);
     pane.hidden = !active;
   }
-  if (tacPreview) tacPreview.dataset.activeMode = mode;
   if (focus) tab.focus({ preventScroll: true });
   trackEvent(`tactical_tab_${mode}`);
 }
@@ -130,8 +136,8 @@ for (const [index, tab] of tacTabs.entries()) {
   tab.addEventListener('click', () => activateTacTab(tab));
   tab.addEventListener('keydown', event => {
     let next;
-    if (event.key === 'ArrowDown') next = (index + 1) % tacTabs.length;
-    else if (event.key === 'ArrowUp') next = (index - 1 + tacTabs.length) % tacTabs.length;
+    if (event.key === 'ArrowDown' || event.key === 'ArrowRight') next = (index + 1) % tacTabs.length;
+    else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') next = (index - 1 + tacTabs.length) % tacTabs.length;
     else if (event.key === 'Home') next = 0;
     else if (event.key === 'End') next = tacTabs.length - 1;
     else return;
@@ -139,6 +145,34 @@ for (const [index, tab] of tacTabs.entries()) {
     activateTacTab(tacTabs[next], true);
   });
 }
+
+// Keep the lottery details open on large screens but collapsed on phones, where the page is long.
+const lotteryDetails = document.querySelector('.lottery-details');
+const phoneLayout = window.matchMedia('(max-width: 700px)');
+const syncLotteryDetails = () => { lotteryDetails.open = !phoneLayout.matches; };
+phoneLayout.addEventListener('change', syncLotteryDetails);
+syncLotteryDetails();
+
+const langMenu = document.querySelector('.lang-menu');
+const pageLanguage = document.documentElement.lang.split('-')[0];
+for (const option of langMenu.querySelectorAll('[data-lang]')) {
+  if (option.dataset.lang === pageLanguage) option.setAttribute('aria-current', 'true');
+  option.addEventListener('click', () => {
+    try {
+      localStorage.setItem('pil-lang', option.dataset.lang);
+    } catch {
+      // Without storage the choice still applies to the page being opened.
+    }
+  });
+}
+document.addEventListener('click', event => {
+  if (!langMenu.contains(event.target)) langMenu.open = false;
+});
+langMenu.addEventListener('keydown', event => {
+  if (event.key !== 'Escape' || !langMenu.open) return;
+  langMenu.open = false;
+  langMenu.querySelector('summary').focus();
+});
 
 async function loadVisitorStats() {
   try {
@@ -148,7 +182,7 @@ async function loadVisitorStats() {
     if (!response.ok) return;
     const stats = await response.json();
     if (![stats.todayVisitors, stats.totalPageviews].every(value => Number.isSafeInteger(value) && value >= 0)) return;
-    const format = new Intl.NumberFormat('zh-CN');
+    const format = new Intl.NumberFormat(document.documentElement.lang);
     document.querySelector('#today-visitors').textContent = format.format(stats.todayVisitors);
     document.querySelector('#total-pageviews').textContent = format.format(stats.totalPageviews);
     document.querySelector('#visitor-stats').hidden = false;

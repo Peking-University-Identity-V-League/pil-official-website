@@ -38,4 +38,6 @@ while (head < tail) {
   if (y < height - 1) enqueue(pixel + width);
 }
 await sharp(data, { raw: { width, height, channels: 4 } }).png().toFile('public/assets/qr/douyin.png');
+// The card shows a 132px thumbnail; the dialog and download keep the full-size code.
+await sharp('public/assets/qr/douyin.png').resize(264).webp({ quality: 80 }).toFile('public/assets/qr/douyin-thumb.webp');
 console.log(`Cropped supplied Douyin code; removed ${tail} outer background pixels without changing enclosed code pixels.`);

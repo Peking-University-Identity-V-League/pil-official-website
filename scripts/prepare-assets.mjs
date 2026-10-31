@@ -8,8 +8,13 @@ for (const file of ['bilibili.png', 'douyin.png', 'wechat.svg', 'xiaohongshu.png
   await copyFile(`assets/logos/${file}`, `public/assets/logos/${file}`);
 }
 for (const variant of ['desktop', 'mobile']) {
-  await sharp(`assets/source/${variant}.png`).webp({ quality: 87, effort: 6 }).toFile(`public/assets/hero-${variant}.webp`);
+  // 1080px wide still covers 3x phones without sending the 1440px source to every device.
+  const artwork = sharp(`assets/source/${variant}.png`);
+  if (variant === 'mobile') artwork.resize({ width: 1080 });
+  await artwork.webp({ quality: 74, effort: 6 }).toFile(`public/assets/hero-${variant}.webp`);
 }
+await sharp('assets/source/desktop.png').resize(1200, 630, { fit: 'cover', position: 'right' })
+  .jpeg({ quality: 80, mozjpeg: true }).toFile('public/assets/og-cover.jpg');
 const platforms = JSON.parse(await readFile('platforms.json', 'utf8'));
 for (const [key, value] of Object.entries(platforms)) {
   if (key === 'douyin') continue; // Use the uploaded, app-specific Douyin code.

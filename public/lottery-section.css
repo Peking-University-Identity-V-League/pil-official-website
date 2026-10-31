@@ -1,171 +1,62 @@
 /* ==========================================================================
    随机抽取工具区块（在 styles.css 之后加载）
-   结构与「战术演习工具」区块保持一致；右侧预览用纯 CSS/SVG 模拟工具的夜色桌面。
+   卡片结构与「战术演练工具」共用 styles.css 的 .tool-*；这里是功能列表，以及用纯 CSS/SVG 模拟工具夜色桌面的预览。
    ========================================================================== */
 
-/* 导航与首屏按钮：为新增入口腾出空间 */
-@media (max-width: 700px) {
+/* 导航在平板宽度放不下完整名称 */
+@media (max-width: 900px) {
   .nav-extra { display: none; }
-
-  .hero-actions {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    max-width: 320px;
-    margin-inline: auto;
-  }
 }
 
-/* ------------------------------------------------------------------ 区块 */
-.lottery {
-  position: relative;
-  padding-block: 48px 52px;
-  border-bottom: 1px solid var(--line);
-}
+/* ------------------------------------------------------------------ 功能列表 */
+/* 预览换到左侧，与上一张卡片交错 */
+.is-lottery .tool-card { grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); }
+.is-lottery .tool-preview { order: -1; }
 
-.lottery-card {
-  display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  gap: 28px;
-  padding: 28px;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 10px;
-  box-shadow:
-    0 8px 28px rgba(103, 85, 59, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
-}
-
-.lottery-main {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.lottery-intro h3 {
-  margin: 0 0 8px;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: 0.5px;
-}
-
-.lottery-intro p {
-  margin: 0;
-  font-size: 13.5px;
-  line-height: 1.9;
-  color: #60665d;
-}
+/* 大屏始终展开，手机上由 app.js 默认折叠 */
+.lottery-details summary { display: none; }
 
 .lottery-features {
   margin: 0;
   padding: 0;
   list-style: none;
   display: grid;
-  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 24px;
 }
 
+/* Six features sit in two ruled columns so the card keeps its height. */
 .lottery-features li {
   display: grid;
+  align-content: start;
   gap: 3px;
-  padding: 13px 15px;
-  border-radius: 8px;
-  background: #fbf9f3;
-  border: 1px solid #e9e3d7;
+  padding-block: 12px 13px;
+  border-top: 1px solid var(--line);
 }
 
 .lottery-features strong {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--ink);
 }
 
 .lottery-features span {
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.65;
   color: var(--muted);
 }
 
-.lottery-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 14px;
-  padding-top: 14px;
-  border-top: 1px solid #ebe6dc;
-}
-
-.lottery-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.lottery-tags span {
-  padding: 3px 9px;
-  border-radius: 999px;
-  font-size: 11px;
-  color: #666a60;
-  background: #f3efe6;
-  border: 1px solid #e5dfd2;
-}
-
-.lottery-link-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 42px;
-  padding: 0 20px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.6px;
-  color: var(--red);
-  background: rgba(148, 7, 10, 0.06);
-  border: 1px solid rgba(148, 7, 10, 0.24);
-  transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
-  flex-shrink: 0;
-}
-
-.lottery-link-button:hover {
-  background: var(--red);
-  border-color: var(--red);
-  color: #fffdf8;
-  transform: translateY(-1px);
-}
-
 /* ------------------------------------------------------------------ 预览：工具的夜色桌面 */
-.lottery-preview {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 16px;
-  border-radius: 8px;
-  background: #fdfbf6;
-  border: 1px solid #e6e0d3;
-}
-
-.lottery-preview .preview-topbar { margin-bottom: 0; }
-
 .lottery-stage {
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 18px;
-  padding: 26px 20px 20px;
-  border-radius: 6px;
-  border: 1px solid #2a3138;
+  padding: 34px 26px 24px;
   background:
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(179, 145, 88, 0.22), transparent 70%),
     #181c21;
-  transition: box-shadow 0.3s;
-}
-
-.lottery-stage:hover {
-  box-shadow: 0 10px 30px rgba(36, 30, 24, 0.22);
 }
 
 .lottery-lineup {
@@ -223,32 +114,11 @@
   border-radius: 48% 52% 50% 46% / 50% 46% 54% 50%;
   background: radial-gradient(circle at 34% 30%, #b83a3c, #8f2327 55%, #5e1214 100%);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-  font-family: var(--serif);
-  font-size: 16cqi;
+  font-family: YanYuanSerif, var(--serif);
+  font-size: 18cqi;
   font-weight: 600;
   line-height: 1;
   color: rgba(52, 6, 8, 0.62);
-}
-
-.mock-to {
-  position: absolute;
-  left: 12%;
-  right: 12%;
-  bottom: 11%;
-  padding-bottom: 2px;
-  border-bottom: 1px solid rgba(61, 49, 36, 0.35);
-  text-align: center;
-  white-space: nowrap;
-  font-family: var(--serif);
-  font-size: 10cqi;
-  color: #3d3124;
-}
-
-.is-hunter .mock-to {
-  color: #b39158;
-  border-bottom-color: rgba(179, 145, 88, 0.4);
-  font-size: 11cqi;
-  letter-spacing: 0.2em;
 }
 
 /* 与工具一致：求生者与监管者之间是一条黄铜竖线 */
@@ -303,7 +173,7 @@
 }
 
 .lottery-result-label {
-  font-family: var(--serif);
+  font-family: YanYuanSerif, var(--serif);
   font-size: 13px;
   letter-spacing: 0.3em;
   color: #61d5dd;
@@ -311,8 +181,8 @@
 
 .lottery-result-copy {
   padding: 1px 8px;
-  font-size: 11px;
-  color: #9b958a;
+  font-size: 12px;
+  color: #b5afa3;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 3px;
 }
@@ -335,7 +205,7 @@
 }
 
 .lottery-chips small {
-  font-size: 11px;
+  font-size: 12px;
   color: #61d5dd;
 }
 
@@ -350,34 +220,25 @@
 
 /* ------------------------------------------------------------------ 响应式 */
 @media (max-width: 1100px) {
-  .lottery-card { grid-template-columns: 1fr; padding: 24px; }
+  .is-lottery .tool-card { grid-template-columns: minmax(0, 1fr); }
+  .is-lottery .tool-preview { order: 3; }
 }
 
 @media (max-width: 700px) {
-  .lottery { padding-block: 30px 32px; }
-
-  .lottery-card {
-    padding: 18px 16px;
-    gap: 20px;
-    background: #fffefa;
+  .lottery-details summary {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--red);
+    cursor: pointer;
   }
 
-  .lottery-intro h3 { font-size: 16px; }
-  .lottery-intro p { font-size: 12.5px; line-height: 1.85; }
-  .lottery-features li { padding: 11px 12px; }
-  .lottery-features strong { font-size: 13px; }
-  .lottery-features span { font-size: 11.5px; }
-
-  .lottery-footer {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .lottery-link-button { justify-content: center; }
-  .lottery-preview { padding: 13px; }
-  .lottery-stage { padding: 18px 12px 14px; }
+  .lottery-details[open] summary { margin-bottom: 8px; }
+  .lottery-features { grid-template-columns: minmax(0, 1fr); }
+  .lottery-stage { padding: 26px 14px 16px; }
   .lottery-lineup { gap: 6px; }
-  .mock-to { display: none; }
   .lottery-divider { margin-inline: 2px; }
 }
 

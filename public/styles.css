@@ -8,13 +8,36 @@
 :root {
   --paper: #f8f5ee;
   --ink: #2c3530;
-  --muted: #72766c;
+  --ink-soft: #565c53;
+  --muted: #62665d;
   --red: #94070a;
   --line: rgba(72, 65, 51, 0.15);
   --card-bg: rgba(255, 254, 251, 0.86);
   --card-border: #e7e2d7;
   --card-border-hover: #cfc5b3;
   --serif: YanYuanSerif, "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  --sans: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+}
+
+:root:not(:lang(zh)) {
+  --serif: Georgia, "Times New Roman", "Noto Serif CJK JP", "Noto Serif", serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Han characters need Japanese glyph forms, and Hangul needs a Korean face. */
+:root:lang(ja) {
+  --serif: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif CJK JP", Georgia, serif;
+  --sans: "Hiragino Sans", "Yu Gothic", Meiryo, "Noto Sans CJK JP", sans-serif;
+}
+
+:root:lang(ko) {
+  --serif: "AppleMyungjo", "Batang", "Noto Serif CJK KR", Georgia, serif;
+  --sans: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans CJK KR", sans-serif;
+}
+
+:root:lang(ar) {
+  --serif: "Geeza Pro", "Times New Roman", "Noto Naskh Arabic", serif;
+  --sans: "Geeza Pro", Tahoma, "Segoe UI", "Noto Sans Arabic", sans-serif;
 }
 
 * {
@@ -30,7 +53,7 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -55,6 +78,14 @@ button:focus-visible,
 a:focus-visible {
   outline: 3px solid var(--red);
   outline-offset: 5px;
+}
+
+.scroll-marker {
+  position: absolute;
+  top: 0;
+  height: 18px;
+  width: 1px;
+  pointer-events: none;
 }
 
 img {
@@ -127,16 +158,16 @@ img {
 }
 
 .brand-text > span {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.8px;
-  color: #6b7065;
+  color: var(--muted);
 }
 
 nav {
   display: flex;
   align-items: center;
   gap: 34px;
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 500;
 }
 
@@ -148,16 +179,78 @@ nav {
   white-space: nowrap;
 }
 
-.nav-link:hover {
+.lang-menu {
+  position: relative;
+  padding-inline-start: 18px;
+  border-inline-start: 1px solid var(--line);
+}
+
+.lang-menu summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  cursor: pointer;
+  list-style: none;
+  white-space: nowrap;
+}
+
+.lang-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.lang-menu summary:hover {
   color: var(--red);
 }
 
-.nav-link[aria-current="page"] {
+.lang-menu summary:focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: 3px;
+}
+
+.lang-options {
+  position: absolute;
+  z-index: 50;
+  top: 100%;
+  inset-inline-end: 0;
+  min-width: 140px;
+  margin: 4px 0 0;
+  padding: 6px;
+  list-style: none;
+  background: #fffdf8;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgba(65, 51, 35, 0.14);
+}
+
+.lang-options a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 12px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.lang-options a:hover {
+  background: #f3efe6;
+}
+
+.lang-options a[aria-current] {
   color: var(--red);
   font-weight: 600;
 }
 
-.nav-link[aria-current="page"]::after {
+.nav-link:hover {
+  color: var(--red);
+}
+
+.nav-link[aria-current="location"] {
+  color: var(--red);
+  font-weight: 600;
+}
+
+.nav-link[aria-current="location"]::after {
   content: "";
   position: absolute;
   bottom: 2px;
@@ -251,18 +344,24 @@ h1 > span:last-child {
   margin-bottom: 0.2em;
 }
 
+/* The official English name is a single long line, so it is sized to match the title below it. */
+.pku-wordmark.is-english {
+  width: 8.1em;
+  margin-bottom: 0.3em;
+}
+
 .hero-english {
   font: 18px/1.6 Georgia, "Times New Roman", serif;
   letter-spacing: 0.8px;
   margin: 0 0 24px;
-  color: #545d53;
+  color: var(--ink-soft);
 }
 
 .hero-description {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.95;
   letter-spacing: 1px;
-  color: #60665d;
+  color: var(--ink-soft);
   margin: 0 0 26px;
 }
 
@@ -284,7 +383,7 @@ h1 > span:last-child {
   padding: 0 26px;
   border: 1px solid rgba(255, 255, 255, 0.68);
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 1px;
   color: #780609;
@@ -333,6 +432,22 @@ h1 > span:last-child {
   transform: translateY(0) scale(0.98);
 }
 
+.hero-button.is-primary {
+  color: #fffdf8;
+  text-shadow: none;
+  background: var(--red);
+  border-color: var(--red);
+  box-shadow: 0 8px 22px rgba(148, 7, 10, 0.24);
+}
+
+@media (hover: hover) {
+  .hero-button.is-primary:hover {
+    background: #780609;
+    border-color: #780609;
+    box-shadow: 0 10px 26px rgba(148, 7, 10, 0.3);
+  }
+}
+
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .hero-button {
     background-color: rgba(255, 253, 248, 0.75);
@@ -365,9 +480,9 @@ h1 > span:last-child {
 
 .about-content p {
   margin: 0 0 16px;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 2;
-  color: #60665d;
+  color: var(--ink-soft);
   text-align: justify;
 }
 
@@ -377,7 +492,7 @@ h1 > span:last-child {
 }
 
 .about-content .about-full-name {
-  text-align: left;
+  text-align: start;
 }
 
 .about-content .about-welcome {
@@ -392,15 +507,13 @@ h1 > span:last-child {
    Shared Section Heading
    ========================================================================== */
 .section-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 28px;
-  gap: 24px;
+  display: grid;
+  gap: 4px;
+  margin-bottom: 24px;
 }
 
 .section-kicker {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 2px;
   color: var(--red);
   margin: 0 0 12px;
@@ -417,12 +530,11 @@ h2 {
 }
 
 .section-description {
-  font-size: 11px;
-  line-height: 1.9;
+  font-size: 13px;
+  line-height: 1.7;
   color: var(--muted);
   margin: 0;
-  text-align: right;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .reveal-section {
@@ -434,253 +546,6 @@ h2 {
 .js-ready .reveal-section:not(.is-visible) {
   opacity: 0;
   transform: translateY(16px);
-}
-
-/* ==========================================================================
-   Tactical Friend Section (Warm Ivory & Parchment Theme)
-   ========================================================================== */
-.tactical {
-  position: relative;
-  padding-block: 48px 52px;
-  border-bottom: 1px solid var(--line);
-}
-
-.tactical-card {
-  display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  gap: 28px;
-  padding: 28px;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 10px;
-  box-shadow:
-    0 8px 28px rgba(103, 85, 59, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
-}
-
-.tactical-main {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.tactical-intro h3 {
-  margin: 0 0 8px;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: 0.5px;
-}
-
-.tactical-intro p {
-  margin: 0;
-  font-size: 13.5px;
-  line-height: 1.9;
-  color: #60665d;
-}
-
-.tactical-tabs {
-  display: grid;
-  gap: 10px;
-}
-
-.tac-tab {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 32px minmax(0, 1fr);
-  align-items: start;
-  gap: 12px;
-  padding: 13px 15px;
-  border-radius: 8px;
-  text-align: left;
-  background: #fbf9f3;
-  border: 1px solid #e9e3d7;
-  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s, transform 0.2s;
-}
-
-.tac-tab:hover {
-  background: #fffefb;
-  border-color: #d6ccb9;
-  transform: translateY(-1px);
-}
-
-.tac-tab.is-active {
-  background: #fffefb;
-  border-color: rgba(148, 7, 10, 0.32);
-  box-shadow:
-    0 5px 16px rgba(103, 85, 59, 0.06),
-    inset 3px 0 0 var(--red);
-}
-
-.tac-tab-num {
-  font: italic 13px/1.6 Georgia, serif;
-  color: #a99f8e;
-}
-
-.tac-tab.is-active .tac-tab-num {
-  color: var(--red);
-  font-weight: 600;
-}
-
-.tac-tab-text {
-  display: grid;
-  gap: 3px;
-}
-
-.tac-tab-text strong {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--ink);
-}
-
-.tac-tab.is-active .tac-tab-text strong {
-  color: var(--red);
-}
-
-.tac-tab-text span {
-  font-size: 12px;
-  line-height: 1.65;
-  color: var(--muted);
-}
-
-.tactical-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 14px;
-  padding-top: 14px;
-  border-top: 1px solid #ebe6dc;
-}
-
-.tactical-maps {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.tactical-maps span {
-  padding: 3px 9px;
-  border-radius: 999px;
-  font-size: 11px;
-  color: #666a60;
-  background: #f3efe6;
-  border: 1px solid #e5dfd2;
-}
-
-.tactical-link-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 42px;
-  padding: 0 20px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.6px;
-  color: var(--red);
-  background: rgba(148, 7, 10, 0.06);
-  border: 1px solid rgba(148, 7, 10, 0.24);
-  transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
-  flex-shrink: 0;
-}
-
-.tactical-link-button:hover {
-  background: var(--red);
-  border-color: var(--red);
-  color: #fffdf8;
-  transform: translateY(-1px);
-}
-
-.tactical-preview {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 16px;
-  border-radius: 8px;
-  background: #fdfbf6;
-  border: 1px solid #e6e0d3;
-}
-
-.preview-topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding-bottom: 12px;
-  margin-bottom: 12px;
-  border-bottom: 1px solid #ece7dc;
-}
-
-.preview-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: #5d6258;
-  letter-spacing: 0.5px;
-}
-
-.preview-launch {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--red);
-  transition: opacity 0.2s;
-}
-
-.preview-launch:hover {
-  opacity: 0.8;
-}
-
-.preview-canvas {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.tac-pane {
-  display: none;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.tac-pane.is-active {
-  display: flex;
-}
-
-.preview-image-link {
-  display: block;
-  position: relative;
-  border-radius: 6px;
-  overflow: hidden;
-  border: 1px solid #e5dfd2;
-  background: #f4efe4;
-}
-
-.preview-image {
-  width: 100%;
-  height: auto;
-  display: block;
-  transition: transform 0.35s ease;
-}
-
-.preview-image-link:hover .preview-image {
-  transform: scale(1.015);
-}
-
-.preview-caption {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-  font-size: 11.5px;
-  color: var(--muted);
-}
-
-.preview-caption span:first-child {
-  font-weight: 600;
-  color: var(--ink);
 }
 
 /* ==========================================================================
@@ -737,14 +602,6 @@ h2 {
 .wechat-logo { background: #07c160; }
 .xiaohongshu-logo { background: #ff2442; }
 
-.card-heading > div {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 3px;
-  padding-top: 3px;
-}
-
 .card-heading h3 {
   font-size: 16px;
   line-height: 1.25;
@@ -753,22 +610,8 @@ h2 {
   white-space: nowrap;
 }
 
-.card-heading div > span {
-  display: block;
-  font-size: 8px;
-  line-height: 1.25;
-  letter-spacing: 1.2px;
-  color: #929184;
-}
-
-.card-index {
-  font: italic 13px Georgia, serif;
-  color: #b8af9f;
-  margin-left: auto;
-}
-
 .account-name {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   margin: 21px 0 13px;
   text-align: center;
@@ -809,7 +652,7 @@ h2 {
   background: #fffefb;
   border: 1px solid #e5e0d5;
   border-radius: 4px;
-  color: #7b7c72;
+  color: var(--ink-soft);
   font-size: 18px;
   opacity: 0;
   transition: opacity 0.2s;
@@ -829,9 +672,9 @@ h2 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
-  text-align: left;
+  text-align: start;
   transition: color 0.2s;
 }
 
@@ -847,16 +690,17 @@ h2 {
 /* Sponsor link: a quiet one-liner under the platform cards. */
 .sponsor-line {
   display: flex;
-  justify-content: flex-end;
-  margin: 16px 0 0;
+  justify-content: center;
+  margin: 26px 0 0;
 }
 
 .sponsor-link {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  min-height: 44px;
   padding: 4px 2px;
-  font-size: 11.5px;
+  font-size: 15px;
   letter-spacing: 0.5px;
   color: var(--muted);
   transition: color 0.2s;
@@ -864,21 +708,23 @@ h2 {
 
 .sponsor-link svg {
   flex: none;
+  width: 16px;
+  height: 16px;
   transition: transform 0.2s;
 }
 
 .sponsor-platform {
-  padding: 1px 7px;
+  padding: 2px 10px;
   border: 1px solid var(--card-border);
   border-radius: 999px;
-  font-size: 10.5px;
-  color: #8a8a7e;
+  font-size: 13px;
+  color: var(--muted);
   background: rgba(255, 254, 251, 0.6);
   transition: border-color 0.2s, color 0.2s;
 }
 
 .sponsor-arrow {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .sponsor-link:hover {
@@ -906,8 +752,8 @@ h2 {
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  color: #828376;
-  font-size: 10px;
+  color: var(--muted);
+  font-size: 12px;
 }
 
 .site-footer p {
@@ -925,7 +771,7 @@ h2 {
 }
 
 .footer-domain {
-  font: 10px Georgia, serif;
+  font: 12px Georgia, serif;
   letter-spacing: 2px;
 }
 
@@ -940,7 +786,7 @@ h2 {
   display: flex;
   align-items: center;
   gap: 9px;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.5;
   letter-spacing: 0.3px;
 }
@@ -951,7 +797,7 @@ h2 {
 
 .visitor-stats strong {
   font-weight: 500;
-  color: #60665d;
+  color: var(--ink-soft);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1003,7 +849,7 @@ h2 {
   border: 0;
   border-radius: 50%;
   background: transparent;
-  color: #77766a;
+  color: var(--ink-soft);
 }
 
 .dialog-close:hover {
@@ -1070,25 +916,27 @@ body.dialog-open {
   nav { gap: 24px; }
   .hero { min-height: 560px; }
   .scenery { height: 790px; }
+  /* Keep the characters to the right of the copy instead of underneath it. */
+  .scenery img { object-position: 12% top; }
+  .scenery::after {
+    background:
+      linear-gradient(0deg, var(--paper) 0%, var(--paper) 4%, rgba(248, 245, 238, 0.9) 18%, rgba(248, 245, 238, 0.38) 30%, transparent 44%),
+      linear-gradient(90deg, rgba(248, 245, 238, 0.95), rgba(248, 245, 238, 0.82) 42%, rgba(248, 245, 238, 0.12) 66%, transparent 82%);
+  }
   .hero-english { font-size: 16px; }
   .about { grid-template-columns: 190px minmax(0, 1fr); gap: 32px; }
-  .tactical-card { grid-template-columns: 1fr; padding: 24px; }
   .platform-grid { gap: 12px; }
   .platform-card { padding: 20px 16px 0; }
   .card-heading { gap: 9px; }
-  .card-index { display: none; }
-  .card-heading h3 { font-size: 14px; }
-  .account-name { font-size: 11px; }
+  .card-heading h3 { font-size: 15px; }
+  .account-name { font-size: 12px; }
 }
 
 @media (min-width: 701px) and (max-width: 900px) {
-  nav { gap: 18px; font-size: 12.5px; }
-  .scenery img { object-position: 60% top; }
+  nav { gap: 18px; font-size: 13px; }
   .hero { min-height: 550px; }
   .platform-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .platform-card { padding: 22px 28px 0; }
-  .card-index { display: block; }
-  .section-description { max-width: 220px; }
 }
 
 @media (max-width: 700px) {
@@ -1107,13 +955,22 @@ body.dialog-open {
   .brand { gap: 7px; }
   .brand-logo { width: 40px; height: 32px; }
   .brand-text { gap: 3px; }
-  .brand-text strong { font-size: 11.5px; letter-spacing: 0.1px; }
-  .brand-text > span { font-size: 7.5px; letter-spacing: 0.15px; }
+  .brand-text strong { font-size: 13px; letter-spacing: 0.1px; }
+  .brand-text > span { display: none; }
 
   nav {
     gap: 10px;
-    font-size: 11px;
+    font-size: 13px;
   }
+
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-block: 0;
+  }
+
+  .lang-menu { padding-inline-start: 10px; }
 
   .nav-home {
     display: none;
@@ -1167,14 +1024,20 @@ body.dialog-open {
     margin-inline: auto;
   }
 
-  .hero-english {
+  /* The official English name is a single long line, so it is sized to match the title below it. */
+.pku-wordmark.is-english {
+  width: 8.1em;
+  margin-bottom: 0.3em;
+}
+
+.hero-english {
     font-size: 14px;
     letter-spacing: 0.4px;
     margin-bottom: 18px;
   }
 
   .hero-description {
-    font-size: 11px;
+    font-size: 14px;
     letter-spacing: 0.7px;
     line-height: 1.85;
     margin-bottom: 18px;
@@ -1182,16 +1045,21 @@ body.dialog-open {
 
   .hero-actions {
     justify-content: center;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     gap: 8px;
   }
 
   .hero-button {
     min-width: 0;
-    min-height: 42px;
-    padding: 0 16px;
-    font-size: 11.5px;
+    min-height: 44px;
+    padding: 0 20px;
+    font-size: 14px;
     white-space: nowrap;
+  }
+
+  /* The artwork runs behind the buttons on phones, so keep the label on a solid surface. */
+  .hero-button:not(.is-primary) {
+    background: rgba(255, 253, 248, 0.92);
   }
 
   .about {
@@ -1201,7 +1069,7 @@ body.dialog-open {
   }
 
   .about-identity {
-    width: min(220px, 65%);
+    width: min(160px, 50%);
     justify-self: center;
   }
 
@@ -1211,60 +1079,15 @@ body.dialog-open {
   }
 
   .about-content p {
-    font-size: 13px;
+    font-size: 14px;
     line-height: 2;
     margin-bottom: 16px;
-    text-align: left;
+    text-align: start;
   }
 
   .about-content .about-welcome {
     font-size: 21px;
     margin-top: 20px;
-  }
-
-  .tactical {
-    padding-block: 30px 32px;
-  }
-
-  .tactical-card {
-    padding: 18px 16px;
-    gap: 20px;
-    background: #fffefa;
-  }
-
-  .tactical-intro h3 {
-    font-size: 16px;
-  }
-
-  .tactical-intro p {
-    font-size: 12.5px;
-    line-height: 1.85;
-  }
-
-  .tac-tab {
-    padding: 11px 12px;
-    gap: 10px;
-  }
-
-  .tac-tab-text strong {
-    font-size: 13px;
-  }
-
-  .tac-tab-text span {
-    font-size: 11.5px;
-  }
-
-  .tactical-footer {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .tactical-link-button {
-    justify-content: center;
-  }
-
-  .tactical-preview {
-    padding: 13px;
   }
 
   .channels {
@@ -1278,7 +1101,7 @@ body.dialog-open {
   }
 
   .section-kicker {
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 1.5px;
     margin-bottom: 8px;
   }
@@ -1289,10 +1112,9 @@ body.dialog-open {
   }
 
   .section-description {
-    font-size: 10px;
+    font-size: 12px;
     line-height: 1.8;
-    text-align: left;
-    margin-top: 10px;
+    margin-top: 4px;
     letter-spacing: 0.4px;
   }
 
@@ -1312,17 +1134,15 @@ body.dialog-open {
   .platform-logo img { width: 26px; height: 26px; }
   .wechat-logo img { width: 25px; height: 25px; }
   .xiaohongshu-logo img { width: 32px; height: 32px; }
-  .card-heading h3 { font-size: 12px; }
-  /* Slightly larger than before (6px / 9px / 10px) so small labels stay legible on phones. */
-  .card-heading div > span { font-size: 7.5px; letter-spacing: 0.8px; }
-  .account-name { font-size: 10px; letter-spacing: 0; margin: 18px -5px 12px; }
+  .card-heading h3 { font-size: 14px; }
+  .account-name { font-size: 12px; letter-spacing: 0; margin: 18px -5px 12px; }
   .qr-button { width: 114px; height: 114px; }
   .qr-button img { width: 112px; height: 112px; }
   .qr-expand { opacity: 1; width: 20px; height: 20px; line-height: 18px; font-size: 16px; bottom: -5px; right: -5px; }
-  .platform-link { font-size: 11px; min-height: 46px; }
+  .platform-link { font-size: 12px; min-height: 46px; }
 
-  .sponsor-line { justify-content: center; margin-top: 14px; }
-  .sponsor-link { padding: 8px 4px; font-size: 11px; }
+  .sponsor-line { margin-top: 20px; }
+  .sponsor-link { padding: 8px 4px; }
 
   .site-footer {
     padding-block: 20px;
@@ -1331,15 +1151,16 @@ body.dialog-open {
     gap: 14px;
   }
 
-  .site-footer p { gap: 8px; font-size: 10px; }
+  .site-footer p { gap: 8px; font-size: 12px; }
   .footer-logo { width: 32px; height: 26px; }
-  .footer-domain { font-size: 9px; letter-spacing: 1px; }
+  .footer-domain { font-size: 12px; letter-spacing: 1px; }
   .footer-meta { align-items: flex-start; }
-  .visitor-stats { font-size: 10px; gap: 7px; }
+  .visitor-stats { font-size: 12px; gap: 7px; }
 }
 
-@media (max-width: 420px) {
-  html { scroll-padding-top: 96px; }
+/* Larger type no longer fits the brand and nav on one line below this width. */
+@media (max-width: 560px) {
+  html { scroll-padding-top: 104px; }
   .site-header {
     height: auto;
     min-height: 84px;
@@ -1349,21 +1170,18 @@ body.dialog-open {
     padding-block: 7px;
   }
   .header-shell.is-scrolled .site-header { height: auto; }
-  .brand-text > span { display: none; }
-  nav { width: 100%; justify-content: center; gap: 24px; font-size: 11px; }
+  nav { width: 100%; justify-content: center; gap: 14px; }
 }
 
 @media (max-width: 360px) {
   .wrap { width: calc(100% - 28px); }
   .brand-logo { width: 40px; height: 32px; }
-  .brand-text strong { font-size: 11px; }
-  .hero-english { font-size: 12px; }
-  .hero-button { padding: 0 12px; font-size: 10.5px; }
+  .hero-english { font-size: 13px; }
+  .hero-button { padding: 0 16px; }
   .platform-card { padding-inline: 9px; }
   .platform-grid { gap: 9px; }
   .card-heading { gap: 6px; }
-  .card-heading h3 { font-size: 11px; }
-  .account-name { font-size: 9.5px; }
+  .card-heading h3 { font-size: 13px; }
   h2 { font-size: 21px; }
 }
 
@@ -1386,5 +1204,501 @@ body.dialog-open {
   *::after {
     transition: none !important;
     animation: none !important;
+  }
+}
+
+/* ==========================================================================
+   404 Page
+   ========================================================================== */
+.not-found {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.not-found h1 {
+  font-size: 36px;
+  margin: 0;
+}
+
+.not-found p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.not-found-en {
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Tool Cards
+   One surface: copy on the paper side, the live preview bleeding to the edge
+   on a dark panel. Hairlines replace nested boxes.
+   ========================================================================== */
+.tool-section {
+  position: relative;
+  padding-block: 48px 52px;
+  border-bottom: 1px solid var(--line);
+}
+
+.tool-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  overflow: hidden;
+  background: #fffefb;
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  box-shadow: 0 18px 44px rgba(103, 85, 59, 0.09);
+}
+
+.tool-main {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 34px 36px;
+}
+
+.tool-intro h3 {
+  margin: 0 0 10px;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.tool-intro p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.85;
+  color: var(--ink-soft);
+}
+
+/* Tabs and the feature list share one quiet, ruled rhythm. */
+.tactical-tabs {
+  display: grid;
+  border-block: 1px solid var(--line);
+}
+
+.tac-tab {
+  width: 100%;
+  min-height: 44px;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  padding: 14px 14px 14px 12px;
+  border: 0;
+  border-inline-start: 3px solid transparent;
+  background: transparent;
+  text-align: start;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.tac-tab + .tac-tab {
+  box-shadow: inset 0 1px 0 var(--line);
+}
+
+.tac-tab:hover {
+  background: rgba(148, 7, 10, 0.025);
+}
+
+.tac-tab.is-active {
+  background: rgba(148, 7, 10, 0.045);
+  border-inline-start-color: var(--red);
+}
+
+.tac-tab-num {
+  font: italic 14px/1.5 Georgia, serif;
+  color: var(--muted);
+}
+
+.tac-tab.is-active .tac-tab-num,
+.tac-tab.is-active .tac-tab-text strong {
+  color: var(--red);
+}
+
+.tac-tab-text {
+  display: grid;
+  gap: 3px;
+}
+
+.tac-tab-text strong {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.tac-tab-text span {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.tool-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  margin-top: auto;
+}
+
+/* Reference facts read as a line of text rather than a row of buttons. */
+.tool-tags {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 2px;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+
+.tool-tags span:not(:last-child)::after {
+  content: "·";
+  margin-inline: 7px;
+  opacity: 0.6;
+}
+
+.tool-link-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 50px;
+  padding-block: 7px;
+  padding-inline: 24px 8px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #fffdf8;
+  background: var(--red);
+  box-shadow: 0 10px 24px rgba(148, 7, 10, 0.22);
+  transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.tool-link-button > span[aria-hidden] {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--red);
+  background: #fffdf8;
+  transition: transform 0.2s;
+}
+
+@media (hover: hover) {
+  .tool-link-button:hover {
+    background: #780609;
+    box-shadow: 0 14px 30px rgba(148, 7, 10, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .tool-link-button:hover > span[aria-hidden] {
+    transform: translate(2px, -2px);
+  }
+}
+
+.tool-link-button:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.tool-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 22px;
+}
+
+.tool-link-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--red);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.tool-link-secondary:hover {
+  border-bottom-color: currentColor;
+}
+
+[dir="rtl"] .tool-link-secondary > span {
+  scale: -1 1;
+}
+
+/* Preview panel */
+.tool-preview {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: #181c21;
+}
+
+.preview-canvas {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.tac-pane {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+}
+
+.tac-pane.is-active {
+  display: flex;
+}
+
+.preview-image-link,
+.lottery-stage {
+  position: relative;
+}
+
+.preview-image-link {
+  flex: 1;
+  display: block;
+  overflow: hidden;
+  min-height: 300px;
+  background: #12161a;
+}
+
+.preview-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.45s ease;
+}
+
+.preview-image-link::after,
+.lottery-stage::after {
+  content: "↗";
+  position: absolute;
+  top: 16px;
+  inset-inline-end: 16px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
+  font-size: 16px;
+  color: #fffdf8;
+  background: rgba(18, 22, 26, 0.62);
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+@media (hover: hover) {
+  .preview-image-link:hover .preview-image {
+    transform: scale(1.025);
+  }
+
+  .preview-image-link:hover::after,
+  .lottery-stage:hover::after {
+    background: var(--red);
+    border-color: var(--red);
+  }
+}
+
+.preview-caption {
+  display: grid;
+  gap: 3px;
+  padding: 15px 22px 17px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #b5afa3;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.preview-caption span:first-child {
+  font-size: 13px;
+  font-weight: 600;
+  color: #efe8d9;
+}
+
+[dir="rtl"] .tool-link-button > span[aria-hidden],
+[dir="rtl"] .preview-image-link::after {
+  scale: -1 1;
+}
+
+@media (max-width: 1100px) {
+  .tool-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Put the preview directly under its tabs so switching a tab is visible. */
+  .tool-main { display: contents; }
+  .tool-intro { order: 1; padding: 28px 28px 22px; }
+  .tactical-tabs,
+  .lottery-details { order: 2; }
+  .tool-preview { order: 3; }
+  .tool-footer { order: 4; padding: 24px 28px 28px; margin-top: 0; }
+  .lottery-details { padding: 0 28px 24px; }
+
+  .tactical-tabs {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-bottom: 0;
+  }
+
+  .tac-tab {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+    padding: 14px 16px 13px;
+    border-inline-start: 0;
+    border-bottom: 3px solid transparent;
+  }
+
+  .tac-tab + .tac-tab {
+    box-shadow: inset 1px 0 0 var(--line);
+  }
+
+  .tac-tab.is-active {
+    border-bottom-color: var(--red);
+  }
+
+  /* A wide crop keeps the map from filling a whole tablet screen. */
+  .preview-image-link {
+    flex: none;
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+  }
+
+  /* Crop from the top so the highlighted route at the bottom stays visible. */
+  .preview-image {
+    object-position: center 80%;
+  }
+}
+
+@media (max-width: 700px) {
+  .tool-section {
+    padding-block: 30px 32px;
+  }
+
+  .tool-card {
+    border-radius: 12px;
+    box-shadow: 0 10px 28px rgba(103, 85, 59, 0.08);
+  }
+
+  .tool-intro { padding: 22px 18px 18px; }
+  .tool-intro h3 { font-size: 18px; }
+  .tool-footer { align-items: stretch; padding: 20px 18px 20px; }
+  .tool-actions { flex-direction: column; align-items: stretch; }
+  .tool-link-secondary { justify-content: center; }
+  /* Four labels need two rows on phones, especially in longer languages. */
+  .tactical-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tac-tab:nth-child(n + 3) { border-top: 1px solid var(--line); }
+  .lottery-details { padding: 0 18px 12px; }
+
+  /* The caption under the preview describes the active tab on phones. */
+  .tac-tab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 4px 5px;
+    text-align: center;
+  }
+
+  .tac-tab-num,
+  .tac-tab-text span { display: none; }
+  .tac-tab-text strong { font-size: 13px; line-height: 1.3; }
+  /* Phones show the whole map, and the corner marker would cover the hunter envelope. */
+  .preview-image-link { aspect-ratio: 750 / 644; }
+  .lottery-stage::after { display: none; }
+  .preview-caption { padding: 13px 18px 15px; }
+}
+
+/* ==========================================================================
+   Right-to-left Pages
+   ========================================================================== */
+/* Arabic letters must stay joined, so tracking is removed everywhere. */
+[dir="rtl"] body,
+[dir="rtl"] body * {
+  letter-spacing: 0 !important;
+}
+
+/* Mirror the artwork so the characters stay opposite the copy. */
+[dir="rtl"] .scenery {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .skip-link {
+  left: auto;
+  right: 12px;
+}
+
+[dir="rtl"] .qr-expand {
+  right: auto;
+  left: -8px;
+}
+
+[dir="rtl"] .dialog-close {
+  right: auto;
+  left: 10px;
+}
+
+/* The preview copies the left-to-right Chinese tool. */
+[dir="rtl"] .lottery-stage {
+  direction: ltr;
+}
+
+@media (max-width: 700px) {
+  [dir="rtl"] .qr-expand {
+    left: -5px;
+  }
+}
+
+[dir="rtl"] .hero-button::before {
+  transform: translateX(100%);
+}
+
+@media (hover: hover) {
+  [dir="rtl"] .hero-button:hover::before {
+    transform: translateX(-100%);
+  }
+}
+
+/* ==========================================================================
+   Header Room for Longer Languages
+   ========================================================================== */
+:root:not(:lang(zh)) .nav-extra {
+  display: none;
+}
+
+@media (min-width: 561px) and (max-width: 1240px) {
+  :root:not(:lang(zh)) .brand-text {
+    display: none;
+  }
+}
+
+@media (max-width: 1000px) {
+  :root:not(:lang(zh)) nav {
+    gap: 14px;
+  }
+}
+
+@media (max-width: 560px) {
+  nav {
+    flex-wrap: wrap;
+    row-gap: 0;
+  }
+
+  /* The globe alone is enough here; the summary keeps its accessible name. */
+  .lang-current {
+    display: none;
   }
 }
