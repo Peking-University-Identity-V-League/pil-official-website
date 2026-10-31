@@ -8,7 +8,7 @@ import ru from './i18n/ru.mjs';
 import { shared, source } from './i18n/source.mjs';
 
 // The Chinese homepage is the single source; every other language page is rendered from it.
-// Keep the language list in step with public/lang-detect.js and public/sitemap.xml.
+// Keep the language list in step with public/lang-detect.js and public/sitemap.txt.
 export const locales = {
   en: { messages: en, ogLocale: 'en_US' },
   fr: { messages: fr, ogLocale: 'fr_FR' },

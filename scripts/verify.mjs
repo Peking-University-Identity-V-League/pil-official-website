@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { readFile, stat } from 'node:fs/promises';
+import { readdir, readFile, stat } from 'node:fs/promises';
+import { extname } from 'node:path';
 import sharp from 'sharp';
 import jsQR from 'jsqr';
 import { localize, locales, translationProblems } from './i18n.mjs';
@@ -32,6 +33,10 @@ for (const type of ['desktop','mobile']) {
   assert.ok(type === 'desktop' ? metadata.width > metadata.height : metadata.height > metadata.width);
 }
 assert.deepEqual(translationProblems(html), { untranslated: [], unused: [], incomplete: [] }, 'Homepage translations are out of date');
+// The production receiver rejects a whole release if it contains any other file type.
+const deployable = new Set(['.html', '.css', '.js', '.json', '.webp', '.png', '.jpg', '.jpeg', '.svg', '.woff', '.woff2', '.ico', '.txt']);
+const published = await readdir('public', { recursive: true, withFileTypes: true });
+for (const entry of published) if (entry.isFile()) assert.ok(deployable.has(extname(entry.name).toLowerCase()), `${entry.name}: file type is not accepted by the release receiver`);
 const font = await readFile('public/assets/title-serif.woff2');
 assert.equal(font.subarray(0, 4).toString(), 'wOF2', 'Heading font must be WOFF2');
 console.log('PASS all HTML assets exist; responsive artwork and local heading font valid.');
